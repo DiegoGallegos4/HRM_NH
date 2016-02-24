@@ -1,0 +1,154 @@
+$icon-font-path: '../fonts/';
+
+// bower:scss
+@import "bower_components/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+// endbower
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+  .container {
+    max-width: 100%;
+  }
+  /* Space out the masthead */
+  .header {
+    margin-bottom: 30px;
+  }
+}
+
+body { 
+    padding-top: 65px; 
+    background-color: #F0F0F0;
+}
+
+
+#containerList{
+  background-color: white;
+  width: 100%;
+  padding: 20px;
+  border-radius: 5px;
+  border: 1px solid #C4C4C4;
+  box-shadow: 2px 2px #888888 ;
+  min-height: 100%;
+  overflow: auto !important;
+}
+
+
+table{
+  thead{
+    font-weight: bold;
+    font-size: 1.2em;
+    background-color: #C2FCED;
+  }   
+    
+  .edit{
+    display: none;
+  }
+
+  tbody{
+    label{
+      font-weight: normal !important;
+
+    }
+  }
+
+  tr:hover .destroy{
+     display: inline-block;
+  }
+
+  .destroy{
+      display: none;
+      float: right;
+      outline: none;
+      width: 12px;
+      height: 12px;
+      margin: auto 0;
+      color: #cc9a9a;
+      border: none;
+      background: inherit;
+    }
+    
+  .destroy:after{
+    content: 'x';
+    right: 10px;
+    outline: none;
+  }
+}
+
+.thumbnail{
+    height: 180px;
+    padding-top: 50px;  
+    border: 8px solid;
+    background-color: #FF5722;//#017d98;
+    color: white;
+    font-size: 1.5em;
+    border-radius: 15px;
+    position:relative;
+}
+
+a.thumbnail:hover, a.thumbnail:focus, a.thumbnail.active {
+    border-color: #FFCCBC;//#F57C00;//#076075;
+    color: #FFFFFF !important;
+}
+
+.card-title{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    background-color: rgba(13, 66, 78, 0.48);
+    color: white;
+    border-radius: 0px 0px 5px 5px;
+    
+}
+
+.center{
+  text-align: center;
+}
+
+.right{
+  float:right;
+}
+
+tr.editing {
+    input{
+      display: block;
+      padding: 8px;
+      width: 100%;
+      background-color: #B6B6B6;
+    }
+    
+    input:focus{
+      outline: none;
+    }
+    
+    .view{
+      display: none;
+    }
+
+    td{
+      padding: 0px !important;
+    }
+}
+
+td:last-child{
+
+}
+// .card-color {
+//   width: 100%;
+//   height: 150px;
+//   background-color: red;
+
+// }
+
+// .card-content{
+//   background-color: blue;
+//   height: 150px;
+//   width: 80%;
+//   float: left;
+//   vertical-align: middle;
+//   margin-top: auto;
+// }
+

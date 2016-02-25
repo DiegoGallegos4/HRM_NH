@@ -19,8 +19,7 @@ var app = app || {};
 			this.header = [
 						{'name':'Nombre'},
 						{'name':'Apellido'},
-						{'name':'Departamento'},
-						{'name': 'PIN'}
+						{'name':'Departamento'}
 				];
 			this.$el.html( this.template( {title:'Empleados', header_fields: this.header} ));
 
@@ -45,8 +44,7 @@ var app = app || {};
 			return {
 				name: this.$input.val().trim(),
 				last_name: 'Gallegos',
-				department: 'IT',
-				pin: '1234'
+				department: 'IT'
 			};
 		},
 
@@ -59,7 +57,7 @@ var app = app || {};
 
 		showModal: function(e){
 			var view = new app.ModalView({collection: this.collection });
-			view.render().el
+			$('#form-modal').html(view.render().el);
 		},
 
 		renderList: function(models){

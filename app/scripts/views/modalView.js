@@ -2,12 +2,13 @@ var app = app || {};
 
 (function(){
 	app.ModalView = Backbone.View.extend({
-		el:'#form-modal',
+		tagName:'div',
+		className: 'modal-dialog',
 
-		template: Handlebars.compile( $('#modal-template').html() ),
+		template: Handlebars.compile( $('#modal-template-employee').html() ),
 
 		events: {
-			'click .btn': 'addEmployee'
+			'click #save': 'addEmployee'
 		},
 
 		initialize: function(){
@@ -32,8 +33,9 @@ var app = app || {};
 			}); 
 			this.collection.create(formData);
 
-			$('.modal').modal('toggle');
-		},
-
+			$('.modal').modal('hide');
+			this.$el.detach();
+			this.render();
+		}
 	});
 }());

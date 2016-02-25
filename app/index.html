@@ -34,7 +34,7 @@
     
     <section id='main' class='container'>
       <!-- BEGIN:  Modal -->
-      <section>
+      <section >
         <div class='modal fade' id='form-modal' tabindex='-1' role='dialog'></div>
       </section>
       <!-- END:  Modal -->
@@ -110,7 +110,6 @@
             <i data-toggle='modal' data-target='#form-modal' class="fa fa-plus-square-o fa-3x"></i>
           </a>
       </div>
-
       <table  class='table table-hover table-condensed'>
         <thead>
           <tr>
@@ -134,7 +133,7 @@
     </script>
     <!-- END: Table Template -->
     <!-- BEGIN: Row Template -->
-    <script type='text/x-handlebars-template' id='row-template'>
+    <script type='text/x-handlebars-template' id='row-template-employee'>
         <td>
           <div class='view'>
             <label>{{name}}</label>
@@ -154,19 +153,12 @@
           <input class='edit edit-department' value="{{department}}">
         </td>
         <td>
-          <div class='view'>
-            <label>{{pin}}</label>
-          </div>
-          <input class='edit edit-pin' value="{{pin}}">
-        </td>
-        <td>
           <button class='destroy'></button>
         </td>
     </script>
     <!-- END: Row Template -->
     <!-- BEGIN: Modal Template -->
-    <script type='text/x-handlebars-template' id='modal-template'>
-      <div class="modal-dialog">
+    <script type='text/x-handlebars-template' id='modal-template-employee'>
         <div class='modal-content'>
           <div class="modal-header">
             <h4>Agregar Nuevo Empleado</h4>
@@ -193,21 +185,12 @@
                   </datalist>
                   <div class="help-block with-errors"></div>
                 </div>
-                <div class='form-group'>
-                  <label for="pin" class='control-label'>PIN</label>
-                  <input type="text" class='form-control' id='pin' required></input>
-                  <div class="help-block with-errors"></div>
-                </div>
-                <button type='submit' class='btn btn-default'>Guardar</button>
+                <button type='submit' id='save' class='btn btn-default'>Guardar</button>
               </form>
           </div>
         </div>
-      </div>
     </script>
     <!-- END: Modal Template -->
-    
-
-
     
     <script src="/bower_components/jquery/dist/jquery.js"></script>
     <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/modal.js"></script>

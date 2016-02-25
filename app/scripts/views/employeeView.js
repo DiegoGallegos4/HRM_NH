@@ -12,7 +12,7 @@ var app = app || {};
 			'click .destroy': 'delete'
 		},
 
-		template: Handlebars.compile( $('#row-template').html() ),
+		template: Handlebars.compile( $('#row-template-employee').html() ),
 
 		initialize: function(){
 			this.listenTo(this.model, 'change', this.render);

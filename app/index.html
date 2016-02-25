@@ -164,7 +164,7 @@
             <h4>Agregar Nuevo Empleado</h4>
           </div>
           <div class="modal-body">
-              <form data-toggle='validator' id='form-employee'>
+              <form role='form' data-toggle='validator' id='form-employee'>
                 <div class='form-group'>
                   <label for="name" class='control-label'>Nombre</label>
                   <input type="text" class='form-control' id='name' required></input>
@@ -185,7 +185,9 @@
                   </datalist>
                   <div class="help-block with-errors"></div>
                 </div>
-                <button type='submit' id='save' class='btn btn-default'>Guardar</button>
+                <div class="form-group">
+                  <button id='save' type="submit" class="btn btn-primary">Guardar</button>
+                </div>
               </form>
           </div>
         </div>

@@ -17,25 +17,35 @@ var app = app || {};
 
 		render: function(){
 			this.$el.html( this.template( {depts: app.Departments.toJSON()} ));
-			this.$form = this.$('#form-employee')
+			this.$form = this.$('#form-employee');
 			this.$form.validator();
 			return this;
 		},
 
 		addEmployee: function(e){
 			e.preventDefault();
+
+			this.$form.validator('validate');
 			var formData = {};
-			
+			var invalid = false;
 			this.$('#form-employee div').children('input').each(function(i,elt){
 				if( $(elt).val() != ''){
 					formData[elt.id] = $(elt).val();
+				}else{
+					invalid = true;
 				}
 			}); 
-			this.collection.create(formData);
 
-			$('.modal').modal('hide');
+			if(!invalid){
+				this.collection.create(formData);
+				$('.modal').modal('hide');
+				this.close();
+				this.render();
+			};
+		},
+
+		close: function(){
 			this.$el.detach();
-			this.render();
 		}
 	});
 }());

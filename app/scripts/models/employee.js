@@ -4,15 +4,9 @@ var app = app || {};
 	app.Employee = Backbone.Model.extend({
 		defaults: {
 			name: '',
-			last_name: '',
+			lastName: '',
 			department: '',
-		},
-
-		validation: {
-			name: {
-				required: true ,
-				msg: 'Nombre es requerido'
-			}
+			completeName: ''
 		}
 	});
 }())

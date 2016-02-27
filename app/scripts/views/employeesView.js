@@ -13,18 +13,16 @@ var app = app || {};
 		},
 
 		initialize: function(){
-
 			this.collection = app.Employees;
 			this.subView = app.EmployeeView;
 			this.header = [
-						{'name':'Nombre'},
-						{'name':'Apellido'},
-						{'name':'Departamento'}
-				];
+				{'name':'Nombre'},
+				{'name':'Apellido'},
+				{'name':'Departamento'}
+			];
 			this.$el.html( this.template( {title:'Empleados', header_fields: this.header} ));
 
-			this.$input = this.$('#new');
-			this.$table = this.$('#rows');
+			this.$tbody = this.$('#rows');
 			this.listenTo( this.collection, 'add', this.addOne);
 			this.listenTo( this.collection, 'reset', this.addAll);
 			this.collection.fetch();
@@ -32,28 +30,14 @@ var app = app || {};
 
 		addOne: function(model){
 			var view = new this.subView({model: model});
-			this.$table.append( view.render().el );
+			this.$tbody.append( view.render().el );
 		},
 
 		addAll: function(){
-			this.$table.html('');
+			this.$tbody.html('');
 			this.collection.each( this.addOne, this );
 		},
 
-		newAttributes: function(){
-			return {
-				name: this.$input.val().trim(),
-				last_name: 'Gallegos',
-				department: 'IT'
-			};
-		},
-
-		createOnEnter: function(e){
-			if(e.which !== ENTER_KEY || !this.$input.val().trim()) return;
-
-			this.collection.create( this.newAttributes() , {validate:true} );
-			this.$input.val(''); 
-		},
 
 		showModal: function(e){
 			var view = new app.ModalView({collection: this.collection });
@@ -61,7 +45,7 @@ var app = app || {};
 		},
 
 		renderList: function(models){
-			this.$table.empty();
+			this.$tbody.empty();
 			models.each(function(model){
 				this.addOne(model);
 			},this) 

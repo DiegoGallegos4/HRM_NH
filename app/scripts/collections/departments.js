@@ -4,7 +4,7 @@ var app = app || {};
 	var DepartmentList = Backbone.Collection.extend({
 		model: app.Department,
 
-		localStorage: new Backbone.LocalStorage('departments'),
+		url: 'http://localhost:4003/api/departments',
 
 		search: function(phrase){
 			if(phrase == '') return this;

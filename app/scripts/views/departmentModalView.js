@@ -1,34 +1,31 @@
 var app = app || {};
 
 (function(){
-	app.ModalView = Backbone.View.extend({
+	app.DepartmentModalView = Backbone.View.extend({
 		tagName:'div',
 		className: 'modal-dialog',
 
-		template: Handlebars.compile( $('#modal-template-employee').html() ),
+		template: Handlebars.compile( $('#modal-template-department').html() ),
 
 		events: {
-			'click #save': 'addEmployee'
-		},
-
-		initialize: function(){
-			app.Departments.fetch();
+			'click #save': 'addDepartment'
 		},
 
 		render: function(){
-			this.$el.html( this.template( {depts: app.Departments.toJSON()} ));
-			this.$form = this.$('#form-employee');
+			this.$el.html(this.template());
+			this.$form = this.$('#form-department');
 			this.$form.validator();
 			return this;
 		},
 
-		addEmployee: function(e){
+		addDepartment: function(e){
 			e.preventDefault();
+			e.stopPropagation();
 
 			this.$form.validator('validate');
 			var formData = {};
 			var invalid = false;
-			this.$('#form-employee div').children('input').each(function(i,elt){
+			this.$('#form-department div').children('input').each(function(i,elt){
 				if( $(elt).val() != ''){
 					formData[elt.id] = $(elt).val();
 				}else{
@@ -48,4 +45,4 @@ var app = app || {};
 			this.$el.detach();
 		}
 	});
-}());
+}())

@@ -11,7 +11,7 @@ var app = app || {};
 			'click .destroy': 'delete'
 		},
 
-		template: Handlebars.compile( $('#table-template').html() ),
+		template: Handlebars.compile( $('#row-department-template').html() ),
 
 		initialize: function(){
 			this.listenTo( this.model, 'change', this.render);
@@ -25,10 +25,8 @@ var app = app || {};
 		},
 
 		edit: function(e){
-			e.stopPropagation();
 			this.$el.addClass('editing');
-			
-			this.$input.focus();
+			//this.$input.focus();
 		},
 
 		close: function(){

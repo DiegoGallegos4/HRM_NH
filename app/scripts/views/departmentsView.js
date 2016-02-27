@@ -4,49 +4,61 @@ var app = app || {};
 	app.DepartmentsView = Backbone.View.extend({
 		el: "#containerList",
 
-		template: Handlebars.compile( $('#container-template').html() ),
+		template: Handlebars.compile( $('#table-improv-template').html() ),
 
 		events: {
 			'keypress #new': 'createOnEnter',
-			'keyup #search': 'searchName'
+			'keyup #search': 'searchName',
+			'click #add' : 'showModal'
 		},
 
+		tableHeader:[
+				{'name':'Nombre'},
+				{'name':'Abreviacion'}
+		],
+
 		initialize: function(){
-			this.$el.html( this.template({title: 'Departamentos'}) );
-			this.$input = this.$('#new');
+			this.collection = app.Departments;
+			this.$el.html( this.template({title: 'Departamentos',header_fields: this.tableHeader}) );
+			//this.$input = this.$('#new');
+			this.$tbody = this.$('#rows');
+			this.listenTo(this.collection, 'add', this.addOne);
+			this.listenTo(this.collection, 'reset', this.addAll);
 
-			this.listenTo(app.Departments, 'add', this.addOne);
-			this.listenTo(app.Departments, 'reset', this.addAll);
+			this.collection.fetch();
+		},
 
-			app.Departments.fetch();
+		showModal: function(e){
+			var view = new app.DepartmentModalView({collection: this.collection });
+			$('#form-modal').html(view.render().el);
 		},
 
 		addOne: function(model){
 			var view = new app.DepartmentView({model: model});
-			this.$('#tableList').append( view.render().el );
+			this.$tbody.append( view.render().el );
 		},
 
 		addAll: function(){
-			this.$('#tableList').html('');
-			app.Departments.each(this.addOne, this);
+			this.$tbody.html('');
+			this.collection.each(this.addOne, this);
 		},
 
-		newAttributes: function(){
-			return {
-				name: this.$input.val().trim()
-			};
-		},
+		// newAttributes: function(){
+		// 	return {
+		// 		name: this.$input.val().trim()
+		// 	};
+		// },
 
-		createOnEnter: function(e){
-			if(e.which !== ENTER_KEY || !this.$input.val().trim()){
-				return;
-			}
-			app.Departments.create( this.newAttributes());
-			this.$input.val('');
-		},
+		// createOnEnter: function(e){
+		// 	if(e.which !== ENTER_KEY || !this.$input.val().trim()){
+		// 		return;
+		// 	}
+		// 	this.collection.create( this.newAttributes() );
+		// 	this.$input.val('');
+		// },
 
 		renderList: function(models){
-			this.$('#tableList').empty();
+			this.$tbody.empty();
 
 			models.each(function(model){
 				this.addOne(model);

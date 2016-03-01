@@ -12,7 +12,8 @@ var app = app || {};
 
 		render: function(){
 			app.Employees.fetch();
-			this.$el.html( this.template({employees: app.Employees.toJSON()}));
+			this.model = this.model || null;
+			this.$el.html( this.template({employees: app.Employees.toJSON(), model: this.model }));
 			return this;
 		},
 

@@ -16,10 +16,12 @@ var app = app || {};
 		},
 
 		render: function(){
-			this.$el.html( this.template( {depts: app.Departments.toJSON()} ));
-			this.$form = this.$('#form-employee');
-			this.$form.validator();
-			return this;
+			if(app.Departments.toJSON()){
+				this.$el.html( this.template( {depts: app.Departments.toJSON()} ));
+				this.$form = this.$('#form-employee');
+				this.$form.validator();
+				return this;
+			}
 		},
 
 		addEmployee: function(e){

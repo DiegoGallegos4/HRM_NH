@@ -10,6 +10,8 @@ var app = app || {};
 			approved: false,
 			transportationConfirmation: false,
 			feedingType: ''
-		}
+		},
+
+		urlRoot: 'http://localhost:4003/api/requestLines'
 	});
 }())

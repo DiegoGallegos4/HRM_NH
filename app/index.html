@@ -198,8 +198,9 @@
     <script type='text/x-handlebars-template' id='modal-template-request'>
         <div class='modal-content'>
           <div class="modal-header">
-            <h4>Nueva Solicitud</h4>
+            <h4>{{title.name}} Solicitud</h4>
           </div>
+          <span id='requestID' class='sr-only'>{{model.id}}</span>
           <div class="modal-body">
               <form role='form' data-toggle='validator' id='form-request'>
                 <div class='form-group'>
@@ -267,7 +268,7 @@
     <!-- BEGIN:Request Row Template -->
     <script type='text/x-handlebars-template' id='requestLine-row-template'>
         <td>
-          <input list='emps' name='employeeID' required></input>
+          <input list='emps' name='employeeID' required value="{{model.employeeID}}"></input>
           <datalist id='emps'>
             {{#each employees}}
             <option value="{{completeName}}"></option>
@@ -275,23 +276,23 @@
           </datalist>
         </td>
         <td>
-          <input list='feedingType' name='feedingType' required></input>
+          <input list='feedingType' name='feedingType' value="{{model.feedingType}}" required></input>
           <datalist id='feedingType'>
             <option value="Almuerzo"></option>
             <option value="Cena"></option>
           </datalist>
         </td>
          <td>
-            <input type='checkbox' name="feeding">
+            <input type='checkbox' name="feeding" {{#if model.feeding}} checked {{/if}}>
           </td>
           <td>
-            <input type='checkbox' name="approved">
+            <input type='checkbox' name="approved" {{#if model.approved}} checked {{/if}}>
           </td>
           <td>
-            <input type='checkbox' name="transportation">
+            <input type='checkbox' name="transportation" {{#if model.transportation}} checked {{/if}}align="">
           </td>
           <td>
-            <input type='checkbox' name="transportationConfirmation">
+            <input type='checkbox' name="transportationConfirmation" {{#if model.transportationConfirmation}} checked {{/if}}>
           </td>
           <td>
             <button class='deleteLine'></button>

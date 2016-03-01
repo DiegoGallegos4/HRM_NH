@@ -34,7 +34,7 @@ var app = app || {};
 			Promise.resolve(request.fetch(requestID)).then(function(response){
 				return response[0];
 			}).then(function(json){
-				var view = new app.RequestModalView( {collection: app.Requests, model: json} );
+				var view = new app.RequestModalView( {collection: app.Requests, model: json, title: {name: 'Editar'}} );
 				$('#form-modal').html(view.render().el);
 				$('[data-toggle="tooltip"]').tooltip();
 			})

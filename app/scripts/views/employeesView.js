@@ -41,7 +41,10 @@ var app = app || {};
 
 		showModal: function(e){
 			var view = new app.ModalView({collection: this.collection });
-			$('#form-modal').html(view.render().el);
+			Promise.resolve(app.Departments.fetch()).then(function(response){
+				console.log(response);
+				$('#form-modal').html(view.render().el);
+			})
 		},
 
 		renderList: function(models){

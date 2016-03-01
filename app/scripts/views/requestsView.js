@@ -40,15 +40,17 @@ var app = app || {};
 		},
 
 		addAll: function(){
-			console.log(this.collection());
 			this.$table.html('');
 			this.collection.each( this.addOne, this );
 		},
 
 		showModal: function(e){
-			var view = new app.RequestModalView({collection: this.collection, model: null});
-			$('#form-modal').html(view.render().el);
-			$('[data-toggle="tooltip"]').tooltip();
+			var view = new app.RequestModalView( { collection: this.collection, model: null, title: {name: 'Crear'} });
+			Promise.resolve(app.Employees.fetch())
+				   .then(function(){
+						$('#form-modal').html(view.render().el);
+						$('[data-toggle="tooltip"]').tooltip();
+					});
 		}
 	});
 }());

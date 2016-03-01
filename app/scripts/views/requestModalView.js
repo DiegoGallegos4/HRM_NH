@@ -3,6 +3,7 @@ var app = app || {};
 (function(){
 	app.RequestModalView = Backbone.View.extend({
 		tagName:'div',
+
 		className: 'modal-dialog',
 
 		template: Handlebars.compile( $('#modal-template-request').html() ),
@@ -11,7 +12,6 @@ var app = app || {};
 
 		events: {
 			'click #save': 'addRequest',
-			'click #feeding': 'enableFeedingType',
 			'click #add' : 'addNewRow'
 		},
 
@@ -26,13 +26,13 @@ var app = app || {};
 
 		render: function(){
 			app.Employees.fetch();
-			console.log(this.model);
-			this.$el.html( this.template({model: this.model}));
+			this.$el.html( this.template({model: this.model, title: this.title}) );
 			this.$('#tableContainer').html( this.templateTable({header_fields: this.tableHeader}) )
 
 			this.$form = this.$('#form-request');
 			this.$formLine = this.$('#form-requestLine');
-			this.enableFeedingType();
+			this.ID = this.$('#requestID').html();
+			this.populateRows();
 			this.$form.validator();
 			this.$('#date').datetimepicker({
 				format: 'YYYY/MM/DD'
@@ -43,17 +43,22 @@ var app = app || {};
 			return this;
 		},
 
-		enableFeedingType: function(){
-			if( !this.$('#feeding').is(':checked') ){
-				
-				this.$('#feedingTypeGroup').addClass('hide');
-			}else{
-				
-				this.$('#feedingTypeGroup').removeClass('hide');
+		populateRows: function(){
+			if(this.ID){
+				var requestLine = new app.RequestLine();
+
+				Promise.resolve(requestLine.fetch(this.ID)).then(function(response){
+					return response;
+				}).then(function(rows){
+					rows.forEach(function(elt,i,array){
+						var viewR = new app.RequestLineView({model: elt});
+						$('#rows').append( viewR.render().el );	
+					});
+				});
 			}
 		},
 
-		addNewRow: function(){
+		addNewRow: function(row){
 			var view = new app.RequestLineView();
 			this.$('#rows').append( view.render().el );			
 		},
@@ -76,11 +81,12 @@ var app = app || {};
 					invalid = true;
 				}
 			});
+			formData['requestLines'] = [];
 
 			$('tr td').children('input').each(function(i,elt){
 				if( counter%6 == 0) {
 					index = index + 1;
-					formLineData[index] = {};
+					formLineData[index] = {};	
 				}
 				if($(elt).attr('type') == 'checkbox'){
 					formLineData[index][$(elt).attr('name')] = $(elt).is(':checked');
@@ -89,14 +95,18 @@ var app = app || {};
 				}
 				counter++
 			});
-			
+			//console.log(formLineData);
+			for(var key in formLineData){
+				if( formLineData.hasOwnProperty(key) ){
+					formData['requestLines'].push(formLineData[key]);
+				}	
+			}
+			//console.log(formData);
 			if(!invalid){
-				Promise.resolve(this.collection.create(formData)).then(function(response){
-					requestID = response.collection.models[0].attributes.id;
-					for(var key in formLineData){
-						if(formLineData.hasOwnProperty(key)){
-							formLineData[key]['requestID'] = requestID;
-							app.RequestLines.create(formLineData[key]);
+				this.collection.create(formData, {
+					success: function(response){
+						if(response){
+							console.log(response);
 						}
 					}
 				})

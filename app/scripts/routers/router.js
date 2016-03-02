@@ -1,6 +1,7 @@
 var app = app || {};
 (function(){
 	var AppRouter = Backbone.Router.extend({
+
 		routes: {
 			''     	      : 'home',
 			'home' 		  : 'home',
@@ -10,11 +11,15 @@ var app = app || {};
 		},
 
 		home: function(){
+
 			this.loadView(new app.HomeView());
+			this.navigate('#');
 		},
 
 		departments: function(){
+
 			this.loadView(new app.DepartmentsView());
+
 		},
 
 		employees: function(){
@@ -33,6 +38,7 @@ var app = app || {};
 	});
 
 	app.Router = new AppRouter();
+
 
 	Backbone.history.start();
 }())

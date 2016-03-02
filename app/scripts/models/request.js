@@ -5,7 +5,8 @@ var app = app || {};
 		defaults: {
 			reason: 'Obras Adicionales',
 			date: '',
-			hour: ''
+			hour: '',
+			feedingType: '',
 		},
 
 		urlRoot: 'http://localhost:4003/api/requests',

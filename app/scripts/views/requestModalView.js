@@ -12,19 +12,32 @@ var app = app || {};
 
 		events: {
 			'click #save': 'addRequest',
-			'click #add' : 'addNewRow'
+			'click #add' : 'addNewRow',
+			'blur input#hour': 'verifyTransport'
 		},
 
 		tableHeader:[
 			{name: 'Empleado'},
-			{name: 'Jornada'},
 			{name: '<i class="fa fa-beer"></i>',tooltip: 'Alimentacion'},
 			{name:'<i class="fa fa-check-circle"></i>' ,tooltip: 'Aprobar'},
 			{name: '<i class="fa fa-bus"></i>',tooltip: 'Transporte'},
 			{name: '<i class="fa fa-thumbs-o-up"></i>',tooltip: 'Confirmar Transporte'}
 		],
 
+		initialize: function(){
+			this.collection = app.Requests;
+			this.collectionLine = app.RequestLines;
+			this.lunchTime = "11:00 AM";
+			this.supperTime = "4:00 PM";
+			this.transportationTime = "7:00 PM";
+
+			this.listenTo(this.collection, 'add', this.setID);
+
+			this.collectionLine.fetch();
+		},
+
 		render: function(){
+
 			app.Employees.fetch();
 			this.$el.html( this.template({model: this.model, title: this.title}) );
 			this.$('#tableContainer').html( this.templateTable({header_fields: this.tableHeader}) )
@@ -43,37 +56,73 @@ var app = app || {};
 			return this;
 		},
 
-		populateRows: function(){
-			if(this.ID){
-				var requestLine = new app.RequestLine();
+		setID: function(model){
+			this.ID = model.get('id');
+		},
 
-				Promise.resolve(requestLine.fetch(this.ID)).then(function(response){
-					return response;
+		populateRows: function(){
+			var self = this;
+			self.$('#rows').html('');
+			if(self.ID){
+				Promise.resolve(self.collectionLine.fetch()).then(function(response){
+					while(!self.collectionLine.lines(self.ID)){ console.log('waiting') }
+					var models = self.collectionLine.lines(self.ID);
+					return models;
 				}).then(function(rows){
 					rows.forEach(function(elt,i,array){
-						var viewR = new app.RequestLineView({model: elt});
-						$('#rows').append( viewR.render().el );	
+						var viewR = new app.RequestLineView({model: elt });
+						self.$('#rows').append( viewR.render().el );	
 					});
 				});
 			}
 		},
 
 		addNewRow: function(row){
-			var view = new app.RequestLineView();
-			this.$('#rows').append( view.render().el );			
+			var now = new Date(Date.now());
+			var nowTime = now.getHours() % 12 + ':' + (now.getMinutes() < 10 ? ('0' + now.getMinutes()) : now.getMinutes())
+				  + ' ' + (now.getHours() > 12 ? 'AM' : 'PM');
+
+			var conditionalSupper = ($('#typeFeeding').val() == 'Cena') && (Date.parse('01/01/2016 ' + this.supperTime) < Date.parse('01/01/2016 ' + nowTime));
+			var conditionalLunch = ($('#typeFeeding').val() == 'Almuerzo') && (Date.parse('01/01/2016 ' + this.lunchTime) < Date.parse('01/01/2016 ' + nowTime));
+			if( conditionalSupper || conditionalLunch ){
+				var view = new app.RequestLineView();
+				this.$('#rows').append( view.render().el );
+				this.verifyTransport();
+			} else{
+				this.$('#lineError')
+					.html('No puedes ingresar solicitudes de Almuerzo despues de las 11:00 am ni solicitudes de Cena despues de la 4:00pm. Contactarse con RH')
+					.show().hide(10000);
+			}				
+		},
+
+		verifyTransport: function(e){
+			var time = $('#hour').val()
+			var transportationCB = this.$('input[name=transportation]');
+			if(transportationCB){
+				if( (Date.parse('01/01/2016 ' + time) >= Date.parse('01/01/2016 ' + this.transportationTime))){
+					transportationCB.each(function(i,elt){
+						$(elt).prop('checked',true);
+					});
+				}else{
+					transportationCB.each(function(i,elt){
+						$(elt).prop('checked',false);
+					});
+				}
+			}
+			
 		},
 
 		addRequest: function(e){
 			e.preventDefault();
 			this.$form.validator('validate');
-			var invalid = false;
 
 			var formData = {},
 				counter = 0,
 				index = 0,
 				formLineData = {},
 				requestID = '',
-				requestLineArray = [];
+				requestLineArray = [],
+				invalid = false;
 
 			this.$form.serializeArray().forEach(function(elt,i,array){
 				formData[array[i].name] = array[i].value;
@@ -84,10 +133,14 @@ var app = app || {};
 			formData['requestLines'] = [];
 
 			$('tr td').children('input').each(function(i,elt){
-				if( counter%6 == 0) {
+				if( counter%5 == 0) {
 					index = index + 1;
-					formLineData[index] = {};	
+					formLineData[index] = {};
+					if($(elt).attr('id')){
+						formLineData[index]['id'] = $(elt).attr('id');
+					}
 				}
+
 				if($(elt).attr('type') == 'checkbox'){
 					formLineData[index][$(elt).attr('name')] = $(elt).is(':checked');
 				}else{
@@ -95,23 +148,45 @@ var app = app || {};
 				}
 				counter++
 			});
-			//console.log(formLineData);
+
 			for(var key in formLineData){
 				if( formLineData.hasOwnProperty(key) ){
 					formData['requestLines'].push(formLineData[key]);
 				}	
 			}
 			//console.log(formData);
+			//console.log(formLineData);
 			if(!invalid){
-				this.collection.create(formData, {
-					success: function(response){
-						if(response){
-							console.log(response);
+				var self = this;
+				if(!self.ID){
+					this.collection.create(formData,{
+						wait: true,
+						success: function(response){
+							for(var key in formLineData){
+								formLineData[key]['requestID'] = response.id;
+								app.RequestLines.create(formLineData[key]);
+							}
+						}
+					})
+				}else{
+					var modelRequest = self.collection.get(self.ID);
+					modelRequest.save(formData);
+
+					for(var key in formLineData){
+						if(formLineData[key]['id']){
+							var modelLine = self.collectionLine.get(formLineData[key]['id']);
+							Promise.resolve( modelLine.save(formLineData[key]) ).then(function(response){
+								Promise.resolve(self.collectionLine.fetch());
+							});
+						}else{
+							formLineData[key]['requestID'] = self.ID;
+							self.collectionLine.create(formLineData[key],{wait:true})
 						}
 					}
-				})
+				}
+								
 			};
-			//this.close();
+			this.close();
 		},
 
 		close: function(){

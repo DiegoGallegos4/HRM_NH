@@ -15,6 +15,7 @@ var app = app || {};
 			this.subView = app.RequestView;
 			this.header = [
 				{'name': 'Razon'},
+				{'name': 'Jornada'},
 				{'name': 'Fecha'},
 				{'name': 'Hora'}
 			];

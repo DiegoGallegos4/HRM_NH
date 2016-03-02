@@ -40,26 +40,18 @@ var app = app || {};
 			})
 		},
 
-		// edit: function(e){
-		// 	this.$el.addClass('editing');
-		// 	e.stopPropagation();
-		// },
-
-		// close: function(){
-		// 	var editData = {};
-		// 	this.$input.each(function(i,elt){
-		// 		editData[elt.className.split(' ')[1].split('-')[1]] = $(elt).val();
-		// 	})
-		// 	if(editData) this.model.save( editData );
-		// 	this.$el.removeClass('editing');
-		// },
-
-		// updateOnEnter: function(e){
-		// 	if(e.which === ENTER_KEY) this.close();
-		// },
-
 		delete: function(){
-			this.model.destroy();
+			var id = this.model.get('id');
+			var self = this;
+			Promise.resolve(app.RequestLines.fetch()).then(function(response){
+				var models = app.RequestLines.lines(id);
+				models.forEach(function(elt,i,array){
+					elt.destroy();
+				})
+				return models;
+			}).then(function(models){
+				self.model.destroy();
+			});
 		}
 	});
 }());

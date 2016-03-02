@@ -20,7 +20,7 @@ var app = app || {};
 			},
 			{
 				'name' : 'Solicitud',
-				'href' : '#request',
+				'href' : '#requests',
 				'icon' : 'edit'
 			},
 			{

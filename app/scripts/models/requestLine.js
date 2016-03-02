@@ -8,8 +8,7 @@ var app = app || {};
 			feeding: false,
 			transportation: false,
 			approved: false,
-			transportationConfirmation: false,
-			feedingType: ''
+			transportationConfirmation: false
 		},
 
 		urlRoot: 'http://localhost:4003/api/requestLines'

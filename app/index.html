@@ -224,11 +224,21 @@
                   <div class="help-block with-errors"></div>
                 </div>
                 <div class='form-group'>
+                  <label for='feedingType' class='control-label'>Jornada</label>
+                  <input id ='typeFeeding' class='form-control' list='feedingType' name='feedingType' value="{{model.feedingType}}" required></input>
+                  <datalist id='feedingType'>
+                    <option value="Almuerzo"></option>
+                    <option value="Cena"></option>
+                  </datalist>
+                  <div class="help-block with-errors"></div>
+                </div>
+                <div class='form-group'>
                   <label for="reason" class='control-label'>Motivo</label>
                   <textarea id='reason' class='form-control' name='reason' required>{{model.reason}}</textarea>
                   <div class="help-block with-errors"></div>
                 </div>
               </form>
+              <div id='lineError' class="text-danger"></div>
           </div>
           <div class="modal-body">
             <form id='form-requestLine'>
@@ -268,18 +278,11 @@
     <!-- BEGIN:Request Row Template -->
     <script type='text/x-handlebars-template' id='requestLine-row-template'>
         <td>
-          <input list='emps' name='employeeID' required value="{{model.employeeID}}"></input>
+          <input list='emps' name='employeeID' value="{{model.employeeID}}" id='{{model.id}}' required></input>
           <datalist id='emps'>
             {{#each employees}}
             <option value="{{completeName}}"></option>
             {{/each}}
-          </datalist>
-        </td>
-        <td>
-          <input list='feedingType' name='feedingType' value="{{model.feedingType}}" required></input>
-          <datalist id='feedingType'>
-            <option value="Almuerzo"></option>
-            <option value="Cena"></option>
           </datalist>
         </td>
          <td>
@@ -289,19 +292,20 @@
             <input type='checkbox' name="approved" {{#if model.approved}} checked {{/if}}>
           </td>
           <td>
-            <input type='checkbox' name="transportation" {{#if model.transportation}} checked {{/if}}align="">
+            <input type='checkbox' name="transportation" {{#if model.transportation}} checked {{/if}} disabled>
           </td>
           <td>
             <input type='checkbox' name="transportationConfirmation" {{#if model.transportationConfirmation}} checked {{/if}}>
           </td>
           <td>
-            <button class='deleteLine'></button>
+            <button class='deleteLine'><i class="fa fa-remove"></i></button>
         </td>
     </script>
     <!-- END:Request Row Template -->
     <!-- BEGIN: Row Template Request-->
     <script type='text/x-handlebars-template' id='row-template-request'>
         <td>{{reason}}</td>
+        <td>{{feedingType}}</td>
         <td>{{printDate date}}</td>
         <td>{{hour}}</td>
         <td>
@@ -320,6 +324,7 @@
     <script src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
     <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
     <script src="/bower_components/backbone/backbone-min.js"></script>
+    <script src="/bower_components/backbone.marionette/lib/backbone.marionette.min.js"></script>
     <script src="bower_components/bootstrap-validator/dist/validator.min.js"></script>  
     <script src="/bower_components/backbone.localStorage/backbone.localStorage-min.js"></script>
 

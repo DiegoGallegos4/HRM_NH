@@ -25,20 +25,24 @@ var app = app || {};
 			},
 			{
 				'name' : 'Alimentacion',
-				'href' : '#feeding',
+				'href' : '#feedings',
 				'icon' : 'beer'
 			},
 			{
 				'name' : 'Transporte',
-				'href' : '#transport',
+				'href' : '#transportation',
 				'icon' : 'bus'
 			},
 			{
 				'name' : 'Pago',
-				'href' : '#payment',
+				'href' : '#payments',
 				'icon' : 'dollar'
 			},
 		],
+
+		initialize: function(){
+			this.render();
+		},
 
 		render: function(){
 			this.icons.forEach(function(icon){

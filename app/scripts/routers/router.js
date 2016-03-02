@@ -7,35 +7,43 @@ var app = app || {};
 			'home' 		  : 'home',
 			'departments' : 'departments',
 			'employees'   : 'employees',
-			'requests' 	  : 'requests'
+			'requests' 	  : 'requests',
+			'feedings'	  : 'feedings'
 		},
 
 		home: function(){
-
-			this.loadView(new app.HomeView());
-			this.navigate('#');
+			new app.HomeView();
 		},
 
 		departments: function(){
-
-			this.loadView(new app.DepartmentsView());
-
+			new app.DepartmentsView();
 		},
 
 		employees: function(){
-			this.loadView(new app.EmployeesView());
+			new app.EmployeesView();
 		},
 
 		requests: function(){
-			this.loadView(new app.RequestsView());
-		},		
-
-		loadView: function(view){
-			this.view && (this.view.close ? this.view.close() : this.view.remove());
-			this.view = view;
-			this.view.render();
+			new app.RequestsView();
 		},
+
+		feedings: function(){
+			new app.FeedingsView();
+		}		
+
 	});
+
+	// var AppRouter = Marionette.AppRouter.extend({
+	// 	appRoutes:{
+	// 		'home' : 'home'
+	// 	},
+	// });
+
+	// var Controller = Marionette.Object.extend({
+	// 	home: function(){
+
+	// 	}
+	// })
 
 	app.Router = new AppRouter();
 

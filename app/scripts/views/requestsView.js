@@ -10,21 +10,32 @@ var app = app || {};
 			'click #add' : 'showModal'
 		},
 
-		initialize: function(){
-			this.collection = app.Requests;
-			this.subView = app.RequestView;
-			this.header = [
+		header: [
 				{'name': 'Razon'},
 				{'name': 'Jornada'},
 				{'name': 'Fecha'},
 				{'name': 'Hora'}
-			];
-			this.$el.html( this.template( {title:'Solicitudes', header_fields: this.header} ));
-			this.$table = this.$('#rows');
+		],
+
+		initialize: function(){
+			this.collection = app.Requests;
+			this.subView = app.RequestView;
+			
 			this.listenTo( this.collection, 'add', this.addOne );
 			this.listenTo( this.collection, 'reset', this.addAll );
 			this.collection.fetch();
-			// console.log(this.collection.toJSON());
+
+			this.render();
+			this.helpers();
+		},
+
+		render: function(){
+			this.$el.html( this.template( {title:'Solicitudes', header_fields: this.header} ));
+			this.$table = this.$('#rows');
+			return this;
+		},
+
+		helpers: function(){
 			Handlebars.registerHelper('printDate',function(date){
 				var current = new Date(date);
 				var dd = current.getDate() < 10 ? '0' + current.getDate() : current.getDate();

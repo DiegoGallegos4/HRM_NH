@@ -27,6 +27,7 @@ var app = app || {};
 		initialize: function(){
 			this.collection = app.Requests;
 			this.collectionLine = app.RequestLines;
+			this.collectionFeeding = app.Feedings;
 			this.lunchTime = "11:00 AM";
 			this.supperTime = "4:00 PM";
 			this.transportationTime = "7:00 PM";
@@ -122,7 +123,8 @@ var app = app || {};
 				formLineData = {},
 				requestID = '',
 				requestLineArray = [],
-				invalid = false;
+				invalid = false,
+				feeding = [];
 
 			this.$form.serializeArray().forEach(function(elt,i,array){
 				formData[array[i].name] = array[i].value;
@@ -136,15 +138,20 @@ var app = app || {};
 				if( counter%5 == 0) {
 					index = index + 1;
 					formLineData[index] = {};
+					feeding[index] = {};
+					feeding[index]['feedingType'] = formData['feedingType'];
+					feeding[index]['date'] = formData['date'];
 					if($(elt).attr('id')){
 						formLineData[index]['id'] = $(elt).attr('id');
 					}
 				}
-
 				if($(elt).attr('type') == 'checkbox'){
 					formLineData[index][$(elt).attr('name')] = $(elt).is(':checked');
 				}else{
 					formLineData[index][$(elt).attr('name')] = $(elt).val();
+					if($(elt).attr('name') == 'employeeID'){
+						feeding[index][$(elt).attr('name')] = $(elt).val();
+					}
 				}
 				counter++
 			});
@@ -159,12 +166,14 @@ var app = app || {};
 			if(!invalid){
 				var self = this;
 				if(!self.ID){
-					this.collection.create(formData,{
+					self.collection.create(formData,{
 						wait: true,
 						success: function(response){
 							for(var key in formLineData){
 								formLineData[key]['requestID'] = response.id;
+								feeding[key]['requestID'] = response.id
 								app.RequestLines.create(formLineData[key]);
+								self.collectionFeeding.create(feeding[key]);
 							}
 						}
 					})

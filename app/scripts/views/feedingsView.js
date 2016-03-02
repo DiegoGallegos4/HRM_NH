@@ -1,38 +1,40 @@
 var app = app || {};
 
 (function(){
-	app.EmployeesView = Backbone.View.extend({
+	app.FeedingsView = Backbone.View.extend({
 		el: '#containerList',
 
 		template: Handlebars.compile( $('#table-improv-template').html() ),
 
 		events:{
-			'keypress #new' : 'createOnEnter',
-			'keyup #search' : 'search',
 			'click #add' : 'showModal'
 		},
 
 		header:[
-				{'name':'Nombre'},
-				{'name':'Apellido'},
-				{'name':'Departamento'}
+				{'name':'Empleado'},
+				{'name':'Fecha'},
+				{'name':'Jornada'},
+				{'name':'Precio'},
+				{'name':'<i class="fa fa-check-circle-o"></i>'}
 		],
 
 		initialize: function(){
-			this.collection = app.Employees;
-			this.subView = app.EmployeeView;
-
+			this.collection = app.Feedings;
+			this.subView = app.FeedingView;
+			this.modalSubView = app.FeedingModalView;
+			this.helper;
 			this.listenTo( this.collection, 'add', this.addOne);
 			this.listenTo( this.collection, 'reset', this.addAll);
 			this.listenTo( this, 'CloseView', this.close);
 			this.collection.fetch();
 
 			this.render();
+
 			this.$tbody = this.$('#rows');
 		},
 
 		render: function(){
-			this.$el.html( this.template( {title:'Empleados', header_fields: this.header} ));
+			this.$el.html( this.template( {title:'Control de Alimentacion', header_fields: this.header} ));
 			return this;
 		},
 
@@ -48,11 +50,10 @@ var app = app || {};
 
 
 		showModal: function(e){
-			var view = new app.ModalView({collection: this.collection });
-			Promise.resolve(app.Departments.fetch()).then(function(response){
-				console.log(response);
+			var view = new this.modalSubView({collection: this.collection});
+			Promise.resolve(app.Employees.fetch()).then(function(response){
 				$('#form-modal').html(view.render().el);
-			})
+			});
 		},
 
 		renderList: function(models){

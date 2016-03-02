@@ -115,14 +115,6 @@
         <thead>
           <tr>
             {{#each header_fields}}
-            <th>
-              <input class='form-control' class="search" type=text>
-            </th>
-            {{/each}}
-            <th></th>
-          </tr>
-          <tr>
-            {{#each header_fields}}
               <th class='center'>{{{name}}}</th>
             {{/each}}
             <th></th>
@@ -253,6 +245,66 @@
         </div>
     </script>
     <!-- END: Request Modal Template -->
+        <!-- BEGIN: Request Modal Template -->
+    <script type='text/x-handlebars-template' id='modal-feeding-template'>
+        <div class='modal-content'>
+          <div class="modal-header">
+            <h4>Alimentacion</h4>
+          </div>
+          <div class="modal-body">
+              <form role='form' data-toggle='validator' id='form-request'>
+
+                <div class='form-group'>
+                  <label for="employeeID" class='control-label'>Empleado</label>
+                  <input class='form-control' list='employees' name='employeeID'required></input>
+                  <datalist id='employees'>
+                  {{#each employees}}
+                    <option value="{{completeName}}"></option>
+                  {{/each}}
+                  </datalist>
+                  <div class="help-block with-errors"></div>
+                </div>
+
+                <div class='form-group'>
+                  <label for="date" class='control-label'>Fecha</label>
+                  <div class='input-group date'>
+                    <input type="text" class='form-control' id='date' name='date'  required></input>
+                    <span class="input-group-addon">
+                          <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                  </div>
+                  <div class="help-block with-errors"></div>
+                </div>
+                <div class='form-group'>
+                  <label for='feedingType' class='control-label'>Jornada</label>
+                  <input id ='typeFeeding' class='form-control' list='feedingType' name='feedingType' value="{{model.feedingType}}" required></input>
+                  <datalist id='feedingType'>
+                    <option value="Almuerzo"></option>
+                    <option value="Cena"></option>
+                  </datalist>
+                  <div class="help-block with-errors"></div>
+                </div>
+                <div class='form-group'>
+                  <label for="price" class='control-label'>Precio</label>
+                  <div class='input-group'>
+                    <input type="text" class='form-control' id='price' name='price' required></input>
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-usd"></span>
+                    </span>
+                  </div>
+                  <div class="help-block with-errors"></div>
+                </div>
+              </form>
+              <div id='lineError' class="text-danger"></div>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <button id='save' type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+          </div>
+        </div>
+    </script>
+    <!-- END: Request Modal Template -->
     <!-- BEGIN:Request Table Template -->
     <script type='text/x-handlebars-template' id='requestLine-table-template'>
       <div class='right'>
@@ -314,6 +366,25 @@
         </td>
     </script>
     <!-- END: Row Template Request-->
+    <!-- BEGIN: Row Template Request-->
+    <script type='text/x-handlebars-template' id='row-feeding-template'>
+        <td>{{employeeID}}</td>
+        <td>{{printDate date}}</td>
+        <td>{{feedingType}}</td>
+        <td>
+          <div class='view'>
+            <label>{{price}}</label>
+          </div>
+          <input class='edit' value="{{price}}">
+        </td>
+        <td>
+          <input type='checkbox' {{#if confirm}} checked {{/if}} disabled>
+        </td>
+        <td>
+          <button class='update' data-toggle='modal' data-target='#form-modal'><i class="fa fa-money"></i></button>
+        </td>
+    </script>
+    <!-- END: Row Template Request-->
         
     <script src="/bower_components/jquery/dist/jquery.js"></script>
     <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/modal.js"></script>
@@ -350,6 +421,12 @@
     <script src="scripts/models/requestLine.js"></script>
     <script src="scripts/collections/requestLines.js"></script>
     <script src="scripts/views/requestLineView.js"></script>
+
+    <script src="scripts/models/feeding_control.js"></script>
+    <script src="scripts/collections/feedings.js"></script>
+    <script src="scripts/views/feedingView.js"></script>
+    <script src="scripts/views/feedingsView.js"></script>
+    <script src="scripts/views/feedingModalView.js"></script>
 
     <script src="scripts/views/homeView.js"></script>
     <script src="scripts/routers/router.js"></script>

@@ -1,14 +1,16 @@
 var app = app || {};
 
 (function(){
-	app.feeding_control = Backbone.Model.extend({
+	app.FeedingControl = Backbone.Model.extend({
 		defaults: {
-			employeeID: 2 ,
-			quantity: 123.0,
+			employeeID: '' ,
+			price: 0.0,
 			confirm: false,
-			request_id: 2,
-			dateConsumed: '',
-			payment: ''
+			requestID: '',
+			date: '',
+			payment: false,
+			pin: '',
+			feedingType: ''
 		}
 	});
-}())
+}());

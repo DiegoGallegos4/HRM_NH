@@ -19,13 +19,17 @@ var app = app || {};
 
 		initialize: function(){
 			this.collection = app.Departments;
-			this.$el.html( this.template({title: 'Departamentos',header_fields: this.tableHeader}) );
-			//this.$input = this.$('#new');
-			this.$tbody = this.$('#rows');
 			this.listenTo(this.collection, 'add', this.addOne);
 			this.listenTo(this.collection, 'reset', this.addAll);
-
 			this.collection.fetch();
+
+			this.render();
+			this.$tbody = this.$('#rows');
+		},
+
+		render: function(){
+			this.$el.html( this.template({title: 'Departamentos',header_fields: this.tableHeader}) );
+			return this;
 		},
 
 		showModal: function(e){
@@ -43,33 +47,17 @@ var app = app || {};
 			this.collection.each(this.addOne, this);
 		},
 
-		// newAttributes: function(){
-		// 	return {
-		// 		name: this.$input.val().trim()
-		// 	};
-		// },
-
-		// createOnEnter: function(e){
-		// 	if(e.which !== ENTER_KEY || !this.$input.val().trim()){
-		// 		return;
-		// 	}
-		// 	this.collection.create( this.newAttributes() );
-		// 	this.$input.val('');
-		// },
-
 		renderList: function(models){
 			this.$tbody.empty();
 
 			models.each(function(model){
 				this.addOne(model);
 			},this)
-
 		},
 
 		searchName: function(e){
 			var phrase = $('#search').val().trim();
 			this.renderList(app.Departments.search(phrase));
-
 		}	
 	});
 	

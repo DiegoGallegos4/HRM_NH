@@ -4,6 +4,8 @@ var app = app || {};
 	app.DepartmentView = Backbone.View.extend({
 		tagName: 'tr',
 
+		className: 'text-center',
+
 		events: {
 			'dblclick td' : 'edit',
 			'blur .edit' : 'close',
@@ -45,6 +47,12 @@ var app = app || {};
 
 		delete: function(){
 			this.model.destroy();
+		},
+
+		onClose: function(){
+			this.model.off('change',this.render);
+			this.model.off('destroy',this.remove);
+			console.log('unbinding');
 		}
 	})
 }())

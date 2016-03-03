@@ -2,9 +2,15 @@ var app = app || {};
 var ENTER_KEY = 13;
 
 $(function(){ 
-	Backbone.View.prototype.close = function () {
+	Backbone.View.prototype.clean = function () {
 	    this.remove();
 	    this.unbind();
+	     _.each(this.subViews, function(subView){
+	      subView.clean();
+	      if(subView.onClose){
+	      	subView.onClose();
+	      }
+	    });
 	};
 
 	Backbone.View.prototype.helper = Handlebars.registerHelper('printDate',function(date){
@@ -14,6 +20,28 @@ $(function(){
 			var yy = current.getFullYear();
 			var result = yy+'-'+mm+'-'+dd;
 			return result;
-		});
+	});
 
+	Backbone.View.prototype.BooleanHelper = Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
+	    switch (operator) {
+	        case '==':
+	            return (v1 == v2) ? options.fn(this) : options.inverse(this);
+	        case '===':
+	            return (v1 === v2) ? options.fn(this) : options.inverse(this);
+	        case '<':
+	            return (v1 < v2) ? options.fn(this) : options.inverse(this);
+	        case '<=':
+	            return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+	        case '>':
+	            return (v1 > v2) ? options.fn(this) : options.inverse(this);
+	        case '>=':
+	            return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+	        case '&&':
+	            return (v1 && v2) ? options.fn(this) : options.inverse(this);
+	        case '||':
+	            return (v1 || v2) ? options.fn(this) : options.inverse(this);
+	        default:
+	            return options.inverse(this);
+	    }
+	});
 });

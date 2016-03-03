@@ -3,7 +3,7 @@ var app = app || {};
 (function(){
 
 	app.HomeView = Backbone.View.extend({
-		el:'#containerList',
+		// el:'#containerList',
 
 		template: Handlebars.compile( $('#home-template').html() ),
 
@@ -40,16 +40,13 @@ var app = app || {};
 			},
 		],
 
-		initialize: function(){
-			this.render();
-		},
-
 		render: function(){
+			// this.$el.html('');
 			this.icons.forEach(function(icon){
 				this.$el.append( this.template(icon) );
 			},this)
 			return this;
-		}
+		},
 	});
 
 }());

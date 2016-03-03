@@ -4,7 +4,7 @@ var app = app || {};
 	app.RequestView = Backbone.View.extend({
 		tagName: 'tr',
 
-		className: 'data-row',
+		className: 'data-row text-center',
 
 		events: {
 			'blur .edit': 'close',

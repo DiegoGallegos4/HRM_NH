@@ -2,7 +2,6 @@ var app = app || {};
 
 (function(){
 	app.DepartmentsView = Backbone.View.extend({
-		el: "#containerList",
 
 		template: Handlebars.compile( $('#table-improv-template').html() ),
 
@@ -19,16 +18,16 @@ var app = app || {};
 
 		initialize: function(){
 			this.collection = app.Departments;
+			this.subViews = [];
 			this.listenTo(this.collection, 'add', this.addOne);
 			this.listenTo(this.collection, 'reset', this.addAll);
-			this.collection.fetch();
-
-			this.render();
-			this.$tbody = this.$('#rows');
+			
+			this.collection.fetch()
 		},
 
 		render: function(){
 			this.$el.html( this.template({title: 'Departamentos',header_fields: this.tableHeader}) );
+			this.$tbody = this.$('#rows');
 			return this;
 		},
 
@@ -39,6 +38,7 @@ var app = app || {};
 
 		addOne: function(model){
 			var view = new app.DepartmentView({model: model});
+			this.subViews.push(view);
 			this.$tbody.append( view.render().el );
 		},
 

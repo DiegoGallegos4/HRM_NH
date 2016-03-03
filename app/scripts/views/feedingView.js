@@ -4,7 +4,7 @@ var app = app || {};
 	app.FeedingView = Backbone.View.extend({
 		tagName: 'tr',
 
-		className: 'data-row center',
+		className: 'data-row text-center',
 
 		events: {
 			'blur .edit': 'save',
@@ -23,6 +23,7 @@ var app = app || {};
 
 		render: function(){
 			this.$el.html( this.template(this.model.attributes) );
+			$('[data-toggle="tooltip"]').tooltip();
 			this.$input = this.$('.edit');
 			return this;
 		},
@@ -42,7 +43,43 @@ var app = app || {};
 		},
 
 		addPin: function(e){
+			var view = new app.FeedingPinModalView({model: this.model});
+			$('#form-modal').html(view.render().el);
+		}
+	});
+
+	app.FeedingPinModalView = Backbone.View.extend({
+		tagName: 'div',
+
+		className: 'modal-dialog',
+
+		template: Handlebars.compile( $('#modal-feedingPin-template').html() ),
+
+		events: {
+			'click #check': 'checkPin'
+		},
+
+		render: function(){
 			console.log(this.model.get('pin'));
+			this.$el.html( this.template() );
+			this.$form = this.$('#form-feedingPin');
+			this.$pin = this.$('#pin');
+			this.$form.validator();	
+			return this;
+		},
+
+		checkPin: function(e){
+			e.preventDefault();
+			if (this.$pin.val() == this.model.get('pin')){
+				this.model.save({confirm: true});
+				this.close();
+			}
+		},
+
+		close: function(){
+			$('.modal').modal('hide');
+			this.$el.detach();
+			this.render();
 		}
 	});
 }());

@@ -8,6 +8,10 @@ var app = app || {};
 
 		lines: function(id){
 			return this.where({requestID: id});
+		},
+
+		byTransportation: function(){
+			return this.where( {transportationConfirmation: true} );
 		}
 	});
 

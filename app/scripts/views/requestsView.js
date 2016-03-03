@@ -2,7 +2,7 @@ var app = app || {};
 
 (function(){
 	app.RequestsView = Backbone.View.extend({
-		el: '#containerList',
+		// el: '#containerList',
 
 		template: Handlebars.compile( $('#table-improv-template').html() ),
 
@@ -25,11 +25,12 @@ var app = app || {};
 			this.listenTo( this.collection, 'reset', this.addAll );
 			this.collection.fetch();
 
-			this.render();
+			// this.render();
 			this.helpers();
 		},
 
 		render: function(){
+			// this.$el.html('');
 			this.$el.html( this.template( {title:'Solicitudes', header_fields: this.header} ));
 			this.$table = this.$('#rows');
 			return this;

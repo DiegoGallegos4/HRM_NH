@@ -3,47 +3,58 @@ var app = app || {};
 	var AppRouter = Backbone.Router.extend({
 
 		routes: {
-			''     	      : 'home',
-			'home' 		  : 'home',
-			'departments' : 'departments',
-			'employees'   : 'employees',
-			'requests' 	  : 'requests',
-			'feedings'	  : 'feedings'
+			''     	         : 'home',
+			'home' 		     : 'home',
+			'departments'    : 'departments',
+			'employees'      : 'employees',
+			'requests' 	     : 'requests',
+			'feedings'	     : 'feedings',
+			'transportation' : 'transportation'
 		},
 
 		home: function(){
-			new app.HomeView();
+			var view = new app.HomeView();
+			this.showView(view);
 		},
 
 		departments: function(){
-			new app.DepartmentsView();
+			var view = new app.DepartmentsView();
+			this.showView(view);
 		},
 
 		employees: function(){
-			new app.EmployeesView();
+			var view = new app.EmployeesView();
+			this.showView(view);
 		},
 
 		requests: function(){
-			new app.RequestsView();
+			var view = new app.RequestsView();
+			this.showView(view);
 		},
 
 		feedings: function(){
-			new app.FeedingsView();
-		}		
+			var view = new app.FeedingsView();
+			this.showView(view);
+		},
+
+		transportation: function(){
+			var view = new app.TransportationView();
+			this.showView(view);
+		},
+
+		showView: function(view){
+			 if (this.currentView){
+		      this.currentView.clean();
+		    }
+
+		    this.currentView = view;
+		    this.currentView.render()
+
+		    $('#containerList').html(this.currentView.el);
+
+		}
 
 	});
-
-	// var AppRouter = Marionette.AppRouter.extend({
-	// 	appRoutes:{
-	// 		'home' : 'home'
-	// 	},
-	// });
-
-	// var Controller = Marionette.Object.extend({
-	// 	home: function(){
-
-	// 	}
-	// })
 
 	app.Router = new AppRouter();
 

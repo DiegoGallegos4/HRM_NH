@@ -252,11 +252,11 @@
             <h4>Alimentacion</h4>
           </div>
           <div class="modal-body">
-              <form role='form' data-toggle='validator' id='form-request'>
+              <form role='form' data-toggle='validator' id='form-feeding'>
 
                 <div class='form-group'>
                   <label for="employeeID" class='control-label'>Empleado</label>
-                  <input class='form-control' list='employees' name='employeeID'required></input>
+                  <input id="employeeID"  class='form-control' list='employees' name="employeeID" required></input>
                   <datalist id='employees'>
                   {{#each employees}}
                     <option value="{{completeName}}"></option>
@@ -276,9 +276,9 @@
                   <div class="help-block with-errors"></div>
                 </div>
                 <div class='form-group'>
-                  <label for='feedingType' class='control-label'>Jornada</label>
-                  <input id ='typeFeeding' class='form-control' list='feedingType' name='feedingType' value="{{model.feedingType}}" required></input>
-                  <datalist id='feedingType'>
+                  <label for='feeding' class='control-label'>Jornada</label>
+                  <input id ='feedingType' class='form-control' list='feedingTypes' name='feeding' value="{{model.feedingType}}" required></input>
+                  <datalist id='feedingTypes'>
                     <option value="Almuerzo"></option>
                     <option value="Cena"></option>
                   </datalist>
@@ -305,6 +305,30 @@
         </div>
     </script>
     <!-- END: Request Modal Template -->
+    <!-- BEGIN: Modal Feeding Pin Template -->
+    <script type='text/x-handlebars-template' id='modal-feedingPin-template'>
+        <div class='modal-content'>
+          <div class="modal-header">
+            <h4>Verificar</h4>
+          </div>
+          <div class="modal-body">
+            <form role='form' data-toggle='validator' id='form-feedingPin'>
+              <div class='form-group'>
+                <label for="pin" class='control-label'>PIN</label>
+                <input type="text" class='form-control' id='pin'  placeholder="Ingrese PIN" required></input>
+                <div class="help-block with-errors"></div>
+              </div>
+            </form>
+            <div id='lineError' class="text-danger"></div>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <button id='check' type="submit" class="btn btn-primary">Confirmar</button>
+            </div>
+          </div>
+        </div>
+    </script>
+    <!-- END: Modal Feeding PinTemplate -->
     <!-- BEGIN:Request Table Template -->
     <script type='text/x-handlebars-template' id='requestLine-table-template'>
       <div class='right'>
@@ -366,8 +390,15 @@
         </td>
     </script>
     <!-- END: Row Template Request-->
-    <!-- BEGIN: Row Template Request-->
+    <!-- BEGIN: Row Feeding Template-->
     <script type='text/x-handlebars-template' id='row-feeding-template'>
+        <td>
+          {{#if requestID}}
+          <span data-toggle='tooltip' title='Solicitado' data-placement='top'>
+             <i class="fa fa-star"></i> 
+          </span>
+          {{/if}}
+        </td>
         <td>{{employeeID}}</td>
         <td>{{printDate date}}</td>
         <td>{{feedingType}}</td>
@@ -381,10 +412,24 @@
           <input type='checkbox' {{#if confirm}} checked {{/if}} disabled>
         </td>
         <td>
+          
           <button class='update' data-toggle='modal' data-target='#form-modal'><i class="fa fa-money"></i></button>
         </td>
     </script>
-    <!-- END: Row Template Request-->
+    <!-- END: Row Feeding Template-->
+    <!-- BEGIN: Row Feeding Template-->
+    <script type='text/x-handlebars-template' id='row-transportation-template'>
+        <td>{{employeeID}}</td>
+        <td>
+          <input type='checkbox' {{#if transportationRegular}} checked {{/if}} disabled>
+        </td>
+        <td>
+          <input type='checkbox' {{#if transportationHome}} checked {{/if}} disabled>
+        </td>
+        <td>{{hour}}</td>
+        <td>{{printDate date}}</td>
+    </script>
+    <!-- END: Row Transportation Template-->
         
     <script src="/bower_components/jquery/dist/jquery.js"></script>
     <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/modal.js"></script>
@@ -395,7 +440,7 @@
     <script src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
     <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
     <script src="/bower_components/backbone/backbone-min.js"></script>
-    <script src="/bower_components/backbone.marionette/lib/backbone.marionette.min.js"></script>
+    <!-- <script src="/bower_components/backbone.marionette/lib/backbone.marionette.min.js"></script> -->
     <script src="bower_components/bootstrap-validator/dist/validator.min.js"></script>  
     <script src="/bower_components/backbone.localStorage/backbone.localStorage-min.js"></script>
 
@@ -427,6 +472,9 @@
     <script src="scripts/views/feedingView.js"></script>
     <script src="scripts/views/feedingsView.js"></script>
     <script src="scripts/views/feedingModalView.js"></script>
+
+    <script src="scripts/views/transportationView.js"></script>
+    <script src="scripts/views/transportationLineView.js"></script>
 
     <script src="scripts/views/homeView.js"></script>
     <script src="scripts/routers/router.js"></script>

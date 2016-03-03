@@ -2,7 +2,7 @@ var app = app || {};
 
 (function(){
 	app.FeedingsView = Backbone.View.extend({
-		el: '#containerList',
+		// el: '#containerList',
 
 		template: Handlebars.compile( $('#table-improv-template').html() ),
 
@@ -11,6 +11,7 @@ var app = app || {};
 		},
 
 		header:[
+				{'name':''},
 				{'name':'Empleado'},
 				{'name':'Fecha'},
 				{'name':'Jornada'},
@@ -23,24 +24,26 @@ var app = app || {};
 			this.subView = app.FeedingView;
 			this.modalSubView = app.FeedingModalView;
 			this.helper;
+			
 			this.listenTo( this.collection, 'add', this.addOne);
 			this.listenTo( this.collection, 'reset', this.addAll);
-			this.listenTo( this, 'CloseView', this.close);
+
 			this.collection.fetch();
 
-			this.render();
-
-			this.$tbody = this.$('#rows');
+			// this.render();
 		},
 
 		render: function(){
+			// this.$el.html('');
 			this.$el.html( this.template( {title:'Control de Alimentacion', header_fields: this.header} ));
+			this.$tbody = this.$('#rows');
 			return this;
 		},
 
 		addOne: function(model){
 			var view = new this.subView({model: model});
 			this.$tbody.append( view.render().el );
+			$('[data-toggle="tooltip"]').tooltip();
 		},
 
 		addAll: function(){

@@ -2,9 +2,13 @@ var app = app || {};
 
 (function(){
 	app.EmployeesView = Backbone.View.extend({
-		el: '#containerList',
+		// el: '#containerList',
 
 		template: Handlebars.compile( $('#table-improv-template').html() ),
+
+		initialize: function() {
+        	dispatcher.on( 'CloseView', this.clean, this );
+    	},
 
 		events:{
 			'keypress #new' : 'createOnEnter',
@@ -24,15 +28,16 @@ var app = app || {};
 
 			this.listenTo( this.collection, 'add', this.addOne);
 			this.listenTo( this.collection, 'reset', this.addAll);
-			this.listenTo( this, 'CloseView', this.close);
 			this.collection.fetch();
 
-			this.render();
-			this.$tbody = this.$('#rows');
+			// this.render();
+			
 		},
 
 		render: function(){
+			// this.$el.html('');
 			this.$el.html( this.template( {title:'Empleados', header_fields: this.header} ));
+			this.$tbody = this.$('#rows');
 			return this;
 		},
 

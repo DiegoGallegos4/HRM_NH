@@ -3,13 +3,13 @@ var ENTER_KEY = 13;
 
 $(function(){ 
 	Backbone.View.prototype.clean = function () {
+		 
+		this.unbind();
 	    this.remove();
-	    this.unbind();
-	     _.each(this.subViews, function(subView){
-	      subView.clean();
-	      if(subView.onClose){
-	      	subView.onClose();
-	      }
+
+	    _.each(this.subViews, function(subView){
+		 	subView.clean();
+		 	if(subView.onClose){ subView.onClose() }
 	    });
 	};
 
@@ -18,7 +18,7 @@ $(function(){
 			var dd = current.getDate() < 10 ? '0' + current.getDate() : current.getDate();
 			var mm = current.getMonth() < 10 ? '0' + (current.getMonth() + 1) : current.getMonth() + 1;
 			var yy = current.getFullYear();
-			var result = yy+'-'+mm+'-'+dd;
+			var result = yy+'/'+mm+'/'+dd;
 			return result;
 	});
 

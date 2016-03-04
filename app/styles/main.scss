@@ -28,6 +28,7 @@ body {
   border-radius: 5px;
   border: 1px solid #C4C4C4;
   box-shadow: 2px 2px #888888 ;
+  height: 400px;
   min-height: 100%;
   overflow: auto !important;
 }
@@ -157,4 +158,7 @@ tr.editing {
   }
     
 
-
+.filter{
+  width: 200px;
+  // position: relative;
+}

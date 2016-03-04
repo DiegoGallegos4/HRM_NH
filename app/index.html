@@ -105,12 +105,27 @@
     <script type='text/x-handlebars-template' id='table-improv-template'>
       <div class='center'>
           <h2>{{title}}</h2>
-        </div>
-        <div class='right'>
-          <a id='add' > 
-            <i data-toggle='modal' data-target='#form-modal' class="fa fa-plus-square-o fa-3x"></i>
-          </a>
       </div>
+      <div class='right'>
+        <a id='add' > 
+          <i data-toggle='modal' data-target='#form-modal' class="fa fa-plus-square-o fa-3x"></i>
+        </a>
+      </div>
+
+      <div class='filter input-group date'>
+        <input type="text" class='form-control' id='filterDate' name='filterDate' required/>
+        <span id='filter' class="input-group-addon">
+          <a>
+            <span class="glyphicon glyphicon-calendar"></span>
+          </a>
+        </span>
+        <span id='today' class="input-group-addon">
+          <a>
+            <span class="glyphicon glyphicon-record"></span>
+          </a>
+        </span>
+      </div>
+
       <table  class='table table-hover table-condensed'>
         <thead>
           <tr>

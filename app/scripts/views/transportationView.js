@@ -6,6 +6,11 @@ var app = app || {};
 
 		template: Handlebars.compile( $('#table-improv-template').html() ),
 
+		events: {
+			'click #today': 'filterToday',
+			'click #filter': 'filterDate'
+		},
+
 		header: [
 				{'name': 'Empleado'},
 				{'name': 'Transporte Normal'},
@@ -22,39 +27,69 @@ var app = app || {};
 			this.listenTo( this.collection, 'reset', this.addAll );
 
 			this.collection.fetch();
-
-			// this.render();
+			app.Requests.fetch();
 			this.helpers;
 		},
 
 		render: function(){
-			// this.$el.html('');
 			this.$el.html( this.template( {title:'Transporte', header_fields: this.header} ));
 			this.$table = this.$('#rows');
+			this.$('#filterDate').datetimepicker({
+				format: 'YYYY/MM/DD'
+			});
 			return this;
 		},
 
-		addOne: function(model){
-			var self = this;
-			Promise.resolve(app.Requests.fetch()).then(function(response){
-				return app.Requests.get(model.get('requestID'));
-			}).then(function(requestModel){
-				var conditionalHome = (Date.parse('2016/01/01 ' + requestModel.get('hour')) > 
+		renderList: function(models){
+			this.$table.html('')
+			models.each(function(model){
+				console.log(model);
+				this.addOne(null,model);
+			},this);
+		},
+
+		filterToday: function(){
+			var today = Date.now();
+			this.renderList(app.Requests.filterByDate(today));
+		},
+
+		filterDate: function(){
+			var date = this.$('#filterDate').val();
+			this.renderList(app.Requests.filterByDate(date));
+		},
+
+		generateModel: function(requestModel, model){
+			var conditionalHome = (Date.parse('2016/01/01 ' + requestModel.get('hour')) > 
 									  Date.parse('2016/01/01 10:00 PM'));
-				var conditionalRegular = (Date.parse('2016/01/01 ' + requestModel.get('hour')) < 
-									     Date.parse('2016/01/01 10:00 PM'));
-				var newModel = {
-					'employeeID' : model.get('employeeID'),
-					'transportationRegular': conditionalRegular,
-					'transportationHome': conditionalHome,
-					'hour': requestModel.get('hour'),
-					'date': requestModel.get('date')
-				};
-				return new Backbone.Model(newModel);
-			}).then(function(newModel){
+			var conditionalRegular = (Date.parse('2016/01/01 ' + requestModel.get('hour')) < 
+							     Date.parse('2016/01/01 10:00 PM'));
+			var newModel = {
+				'employeeID' : model.get('employeeID'),
+				'transportationRegular': conditionalRegular,
+				'transportationHome': conditionalHome,
+				'hour': requestModel.get('hour'),
+				'date': requestModel.get('date')
+			};
+
+			return newModel;
+		},
+
+		addOne: function(model,r){
+			var self = this;
+			console.log(r);
+			if(r == null){
+				Promise.resolve(app.Requests.fetch()).then(function(response){
+					var requestModel = app.Requests.get(model.get('requestID'));
+					var newModel = new Backbone.Model( self.generateModel(requestModel, model) );
+					var view = new self.subView({model: newModel});
+					self.$table.append( view.render().el );
+				});
+			}else{
+				
+				var newModel = new Backbone.Model( self.generateModel(r, model) );
 				var view = new self.subView({model: newModel});
 				self.$table.append( view.render().el );
-			});
+			}
 		},
 
 		addAll: function(){

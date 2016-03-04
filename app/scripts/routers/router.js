@@ -51,7 +51,6 @@ var app = app || {};
 		    this.currentView.render()
 
 		    $('#containerList').html(this.currentView.el);
-
 		}
 
 	});

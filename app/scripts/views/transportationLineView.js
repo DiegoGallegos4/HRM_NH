@@ -9,7 +9,11 @@ var app = app || {};
 		template: Handlebars.compile( $('#row-transportation-template').html() ),
 
 		render: function(){
-			this.$el.html( this.template(this.model.attributes) );
+			if(this.model){
+				this.$el.html( this.template(this.model.attributes) );
+			}else{
+				this.$el.html( this.template() );
+			}
 			return this;
 		}
 	});
@@ -18,7 +22,5 @@ var app = app || {};
 
 /**
 1. Filter by Date **
-3. Add field tries to alimentacion **
-4. Add RBAC **
-5. Caching
+4. Add RBAC/OAuth **
 **/

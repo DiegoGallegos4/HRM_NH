@@ -20,14 +20,13 @@ var app = app || {};
 		],
 
 		initialize: function(){
-			this.collection = app.RequestLines;
+			this.collection = app.Requests;
 			this.subView = app.TransportationLineView;
 			
 			this.listenTo( this.collection, 'add', this.addOne );
 			this.listenTo( this.collection, 'reset', this.addAll );
 
 			this.collection.fetch();
-			app.Requests.fetch();
 			this.helpers;
 		},
 
@@ -43,28 +42,31 @@ var app = app || {};
 		renderList: function(models){
 			this.$table.html('')
 			models.each(function(model){
-				console.log(model);
-				this.addOne(null,model);
+				this.addOne(model);
 			},this);
 		},
 
 		filterToday: function(){
-			var today = Date.now();
+			var current = new Date();
+			var dd = current.getDate() < 10 ? '0' + current.getDate() : current.getDate();
+			var mm = current.getMonth() < 10 ? '0' + (current.getMonth() + 1) : current.getMonth() + 1;
+			var yy = current.getFullYear();
+			var today = yy+'/'+mm+'/'+dd;
 			this.renderList(app.Requests.filterByDate(today));
 		},
 
 		filterDate: function(){
 			var date = this.$('#filterDate').val();
-			this.renderList(app.Requests.filterByDate(date));
+			if(date) this.renderList(app.Requests.filterByDate(date));
 		},
 
-		generateModel: function(requestModel, model){
+		generateModel: function(requestModel, rLModel){
 			var conditionalHome = (Date.parse('2016/01/01 ' + requestModel.get('hour')) > 
 									  Date.parse('2016/01/01 10:00 PM'));
 			var conditionalRegular = (Date.parse('2016/01/01 ' + requestModel.get('hour')) < 
 							     Date.parse('2016/01/01 10:00 PM'));
 			var newModel = {
-				'employeeID' : model.get('employeeID'),
+				'employeeID' : rLModel['employeeID'],
 				'transportationRegular': conditionalRegular,
 				'transportationHome': conditionalHome,
 				'hour': requestModel.get('hour'),
@@ -74,22 +76,15 @@ var app = app || {};
 			return newModel;
 		},
 
-		addOne: function(model,r){
-			var self = this;
-			console.log(r);
-			if(r == null){
-				Promise.resolve(app.Requests.fetch()).then(function(response){
-					var requestModel = app.Requests.get(model.get('requestID'));
-					var newModel = new Backbone.Model( self.generateModel(requestModel, model) );
-					var view = new self.subView({model: newModel});
-					self.$table.append( view.render().el );
-				});
-			}else{
-				
-				var newModel = new Backbone.Model( self.generateModel(r, model) );
-				var view = new self.subView({model: newModel});
-				self.$table.append( view.render().el );
-			}
+		addOne: function(model){
+			var requestLines = model ? model.attributes.requestLines: [];
+			console.log(model);
+			requestLines.forEach(function(rL,i,array){
+				var newModel = new Backbone.Model( this.generateModel(model,rL) );
+				var view = new this.subView({model: newModel});
+				this.$table.append( view.render().el );
+			},this)			
+			
 		},
 
 		addAll: function(){

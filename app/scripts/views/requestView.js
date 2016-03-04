@@ -30,8 +30,9 @@ var app = app || {};
 		update: function(e){
 			var requestID = $(e.currentTarget).attr('id');
 			var request = new app.Request();
-
-			Promise.resolve(request.fetch(requestID)).then(function(response){
+			console.log(requestID)
+			Promise.resolve(request.fetch({id: requestID})).then(function(response){
+				console.log(response);
 				return response[0];
 			}).then(function(json){
 				var view = new app.RequestModalView( {collection: app.Requests, model: json, title: {name: 'Editar'}} );

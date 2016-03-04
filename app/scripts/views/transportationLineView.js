@@ -21,6 +21,5 @@ var app = app || {};
 
 
 /**
-1. Filter by Date **
 4. Add RBAC/OAuth **
 **/

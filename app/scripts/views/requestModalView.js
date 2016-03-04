@@ -28,11 +28,10 @@ var app = app || {};
 			this.collection = app.Requests;
 			this.collectionLine = app.RequestLines;
 			this.collectionFeeding = app.Feedings;
+			this.subViews = []
 			this.lunchTime = "11:00 AM";
 			this.supperTime = "4:00 PM";
 			this.transportationTime = "7:00 PM";
-
-			this.listenTo(this.collection, 'add', this.setID);
 
 			this.collectionLine.fetch();
 		},
@@ -57,21 +56,20 @@ var app = app || {};
 			return this;
 		},
 
-		setID: function(model){
-			this.ID = model.get('id');
-		},
-
 		populateRows: function(){
 			var self = this;
 			self.$('#rows').html('');
+			console.log(self.ID);
 			if(self.ID){
 				Promise.resolve(self.collectionLine.fetch()).then(function(response){
 					while(!self.collectionLine.lines(self.ID)){ console.log('waiting') }
 					var models = self.collectionLine.lines(self.ID);
 					return models;
 				}).then(function(rows){
+					console.log(rows)
 					rows.forEach(function(elt,i,array){
 						var viewR = new app.RequestLineView({model: elt });
+						self.subViews.push(viewR);
 						self.$('#rows').append( viewR.render().el );	
 					});
 				});
@@ -81,10 +79,10 @@ var app = app || {};
 		addNewRow: function(row){
 			var now = new Date(Date.now());
 			var nowTime = now.getHours() % 12 + ':' + (now.getMinutes() < 10 ? ('0' + now.getMinutes()) : now.getMinutes())
-				  + ' ' + (now.getHours() > 12 ? 'AM' : 'PM');
-
-			var conditionalSupper = ($('#typeFeeding').val() == 'Cena') && (Date.parse('01/01/2016 ' + this.supperTime) < Date.parse('01/01/2016 ' + nowTime));
-			var conditionalLunch = ($('#typeFeeding').val() == 'Almuerzo') && (Date.parse('01/01/2016 ' + this.lunchTime) < Date.parse('01/01/2016 ' + nowTime));
+				  + ' ' + (now.getHours() > 12 ? 'PM' : 'AM');
+			console.log(nowTime);
+			var conditionalSupper = ($('#typeFeeding').val() == 'Cena') && (Date.parse('01/01/2016 ' + this.supperTime) > Date.parse('01/01/2016 ' + nowTime));
+			var conditionalLunch = ($('#typeFeeding').val() == 'Almuerzo') && (Date.parse('01/01/2016 ' + this.lunchTime) > Date.parse('01/01/2016 ' + nowTime));
 			if( conditionalSupper || conditionalLunch ){
 				var view = new app.RequestLineView();
 				this.$('#rows').append( view.render().el );
@@ -138,9 +136,11 @@ var app = app || {};
 				if( counter%5 == 0) {
 					index = index + 1;
 					formLineData[index] = {};
+
 					feeding[index] = {};
 					feeding[index]['feedingType'] = formData['feedingType'];
 					feeding[index]['date'] = formData['date'];
+					//update
 					if($(elt).attr('id')){
 						formLineData[index]['id'] = $(elt).attr('id');
 					}
@@ -161,8 +161,8 @@ var app = app || {};
 					formData['requestLines'].push(formLineData[key]);
 				}	
 			}
-			//console.log(formData);
-			//console.log(formLineData);
+			console.log(formData);
+			console.log(formLineData);
 			if(!invalid){
 				var self = this;
 				if(!self.ID){
@@ -198,10 +198,24 @@ var app = app || {};
 			this.close();
 		},
 
+		onClose: function(){
+			this.model.off('change',this.render);
+			this.model.off('destroy',this.remove);
+			console.log('unbinding');
+		},
+
 		close: function(){
 			$('.modal').modal('hide');
 			this.$el.detach();
-			this.render();
+			_.each(this.subViews, function(subView){
+			 	subView.clean();
+			 	if(subView.onClose){ subView.onClose() }
+		    });
+			this.unbind();
+			this.remove();
+
+			
+
 		}
 	});
 }())

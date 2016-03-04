@@ -19,6 +19,12 @@ var app = app || {};
 
 		delete: function(){
 			this.$el.remove();
+		},
+
+		onClose: function(){
+			this.model.off('change',this.render);
+			this.model.off('destroy',this.remove);
+			console.log('unbinding');
 		}
 	});
 }());	

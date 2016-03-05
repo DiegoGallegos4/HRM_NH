@@ -13,7 +13,9 @@ var app = app || {};
 		events: {
 			'click #save': 'addRequest',
 			'click #add' : 'addNewRow',
-			'blur input#hour': 'verifyTransport'
+			'blur input#hour': 'verifyTransport',
+			'click input[name="approved"]': 'approveFeeding',
+			'click input[name="transportationConfirmation"]': 'confirmTransportation'
 		},
 
 		tableHeader:[
@@ -37,7 +39,6 @@ var app = app || {};
 		},
 
 		render: function(){
-
 			app.Employees.fetch();
 			this.$el.html( this.template({model: this.model, title: this.title}) );
 			this.$('#tableContainer').html( this.templateTable({header_fields: this.tableHeader}) )
@@ -59,14 +60,14 @@ var app = app || {};
 		populateRows: function(){
 			var self = this;
 			self.$('#rows').html('');
-			console.log(self.ID);
+
 			if(self.ID){
 				Promise.resolve(self.collectionLine.fetch()).then(function(response){
 					while(!self.collectionLine.lines(self.ID)){ console.log('waiting') }
 					var models = self.collectionLine.lines(self.ID);
 					return models;
 				}).then(function(rows){
-					console.log(rows)
+
 					rows.forEach(function(elt,i,array){
 						var viewR = new app.RequestLineView({model: elt });
 						self.subViews.push(viewR);
@@ -80,10 +81,10 @@ var app = app || {};
 			var now = new Date(Date.now());
 			var nowTime = now.getHours() % 12 + ':' + (now.getMinutes() < 10 ? ('0' + now.getMinutes()) : now.getMinutes())
 				  + ' ' + (now.getHours() > 12 ? 'PM' : 'AM');
-			console.log(nowTime);
+
 			var conditionalSupper = ($('#typeFeeding').val() == 'Cena') && (Date.parse('01/01/2016 ' + this.supperTime) > Date.parse('01/01/2016 ' + nowTime));
 			var conditionalLunch = ($('#typeFeeding').val() == 'Almuerzo') && (Date.parse('01/01/2016 ' + this.lunchTime) > Date.parse('01/01/2016 ' + nowTime));
-			if( conditionalSupper || conditionalLunch ){
+			if( conditionalSupper || conditionalLunch || true){
 				var view = new app.RequestLineView();
 				this.$('#rows').append( view.render().el );
 				this.verifyTransport();
@@ -109,6 +110,17 @@ var app = app || {};
 				}
 			}
 			
+		},
+
+		confirmTransportation: function(e){
+			if(this.$('input[name="transportation"]').prop('checked') == true ){
+				$(e.currentTarget).prop('checked',true);
+			}else{
+				e.preventDefault();
+				this.$('#lineError')
+					.html('La hora de salida del empleado no aplica para transporte')
+					.show().hide(5000);
+			}
 		},
 
 		addRequest: function(e){
@@ -162,7 +174,7 @@ var app = app || {};
 				}	
 			}
 			console.log(formData);
-			console.log(formLineData);
+			// console.log(formLineData);
 			if(!invalid){
 				var self = this;
 				if(!self.ID){
@@ -172,11 +184,12 @@ var app = app || {};
 							for(var key in formLineData){
 								formLineData[key]['requestID'] = response.id;
 								feeding[key]['requestID'] = response.id
-								app.RequestLines.create(formLineData[key]);
+								// app.RequestLines.create(formLineData[key]);
 								self.collectionFeeding.create(feeding[key]);
 							}
 						}
-					})
+					});
+					console.log('later');
 				}else{
 					var modelRequest = self.collection.get(self.ID);
 					modelRequest.save(formData);
@@ -187,9 +200,6 @@ var app = app || {};
 							Promise.resolve( modelLine.save(formLineData[key]) ).then(function(response){
 								Promise.resolve(self.collectionLine.fetch());
 							});
-						}else{
-							formLineData[key]['requestID'] = self.ID;
-							self.collectionLine.create(formLineData[key],{wait:true})
 						}
 					}
 				}
@@ -213,9 +223,6 @@ var app = app || {};
 		    });
 			this.unbind();
 			this.remove();
-
-			
-
 		}
 	});
 }())

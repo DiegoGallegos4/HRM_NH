@@ -17,8 +17,8 @@ var app = app || {};
 			return this;
 		},
 
-		delete: function(){
-			this.$el.remove();
+		delete: function(model){
+			this.model.destroy();
 		},
 
 		onClose: function(){

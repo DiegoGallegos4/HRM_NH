@@ -9,10 +9,7 @@ var app = app || {};
 		filterByDate: function(date){
 			if(date == '') return this;
 
-			var pattern = new RegExp(date,"gi");
-			return _(this.filter(function(data){
-				return pattern.test(data.get('date'));
-			}));
+			return this.where({date: date});
 		}
 	});
 

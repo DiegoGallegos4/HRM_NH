@@ -6,7 +6,8 @@ var app = app || {};
 			name: '',
 			lastName: '',
 			department: '',
-			completeName: ''
+			completeName: '',
+			pin: ''
 		}
 	});
 }())

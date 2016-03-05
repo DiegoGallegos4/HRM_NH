@@ -3,10 +3,8 @@ var ENTER_KEY = 13;
 
 $(function(){ 
 	Backbone.View.prototype.clean = function () {
-		 
+		this.remove();
 		this.unbind();
-	    this.remove();
-
 	    _.each(this.subViews, function(subView){
 		 	subView.clean();
 		 	if(subView.onClose){ subView.onClose() }

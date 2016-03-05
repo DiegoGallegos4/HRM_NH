@@ -40,10 +40,11 @@ var app = app || {};
 		},
 
 		renderList: function(models){
-			this.$table.html('')
-			models.each(function(model){
-				this.addOne(model);
-			},this);
+			this.$table.html('');
+			var self = this;
+			models.forEach(function(model){
+				self.addOne(model);
+			});
 		},
 
 		filterToday: function(){
@@ -52,19 +53,21 @@ var app = app || {};
 			var mm = current.getMonth() < 10 ? '0' + (current.getMonth() + 1) : current.getMonth() + 1;
 			var yy = current.getFullYear();
 			var today = yy+'/'+mm+'/'+dd;
-			this.renderList(app.Requests.filterByDate(today));
+			this.renderList(this.collection.filterByDate(today));
 		},
 
 		filterDate: function(){
 			var date = this.$('#filterDate').val();
-			if(date) this.renderList(app.Requests.filterByDate(date));
+			if(date) {
+				this.renderList(this.collection.filterByDate(date));
+			}
 		},
 
 		generateModel: function(requestModel, rLModel){
-			var conditionalHome = (Date.parse('2016/01/01 ' + requestModel.get('hour')) > 
-									  Date.parse('2016/01/01 10:00 PM'));
-			var conditionalRegular = (Date.parse('2016/01/01 ' + requestModel.get('hour')) < 
-							     Date.parse('2016/01/01 10:00 PM'));
+			var conditionalHome = (Date.parse('2016/01/01 ' + requestModel.get('hour')) >= 
+									  Date.parse('2016/01/01 9:00 PM'));
+			var conditionalRegular = (Date.parse('2016/01/01 ' + requestModel.get('hour')) >= 
+							     Date.parse('2016/01/01 7:00 PM') && Date.parse('2016/01/01 ' + requestModel.get('hour')) <= Date.parse('2016/01/01 9:00 PM') );
 			var newModel = {
 				'employeeID' : rLModel['employeeID'],
 				'transportationRegular': conditionalRegular,
@@ -78,11 +81,12 @@ var app = app || {};
 
 		addOne: function(model){
 			var requestLines = model ? model.attributes.requestLines: [];
-			console.log(model);
 			requestLines.forEach(function(rL,i,array){
-				var newModel = new Backbone.Model( this.generateModel(model,rL) );
-				var view = new this.subView({model: newModel});
-				this.$table.append( view.render().el );
+				if(rL.transportationConfirmation && rL.transportation){
+					var newModel = new Backbone.Model( this.generateModel(model,rL) );
+					var view = new this.subView({model: newModel});
+					this.$table.append( view.render().el );
+				}
 			},this)			
 			
 		},

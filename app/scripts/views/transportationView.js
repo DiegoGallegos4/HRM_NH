@@ -31,7 +31,10 @@ var app = app || {};
 		},
 
 		render: function(){
-			this.$el.html( this.template( {title:'Transporte', header_fields: this.header} ));
+			this.$el.html( this.template( {title:'Transporte', 
+				header_fields: this.header,
+				filterText: true
+			}));
 			this.$table = this.$('#rows');
 			this.$('#filterDate').datetimepicker({
 				format: 'YYYY/MM/DD'

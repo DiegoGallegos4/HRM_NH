@@ -7,7 +7,7 @@ var app = app || {};
 
 		events: {
 			'keypress #new': 'createOnEnter',
-			'keyup #search': 'searchName',
+			'keyup #filterText': 'filterText',
 			'click #add' : 'showModal'
 		},
 
@@ -19,14 +19,18 @@ var app = app || {};
 		initialize: function(){
 			this.collection = app.Departments;
 			this.subViews = [];
+
+			// if(this.collection.size() > 0)
+   //          	this.collection.each(this.addOne, this);
+
 			this.listenTo(this.collection, 'add', this.addOne);
 			this.listenTo(this.collection, 'reset', this.addAll);
 			
-			this.collection.fetch();
+			this.collection.fetch({reset:true});
 		},
 
 		render: function(){
-			this.$el.html( this.template({title: 'Departamentos',header_fields: this.tableHeader}) );
+			this.$el.html( this.template({title: 'Departamentos',header_fields: this.tableHeader, filterText: true,addButton:true}) );
 			this.$tbody = this.$('#rows');
 			return this;
 		},
@@ -39,7 +43,7 @@ var app = app || {};
 		addOne: function(model){
 			var view = new app.DepartmentView({model: model});
 			this.subViews.push(view);
-			this.$tbody.append( view.render().el );
+			this.$('#rows').append( view.render().el );
 		},
 
 		addAll: function(){
@@ -55,8 +59,8 @@ var app = app || {};
 			},this)
 		},
 
-		searchName: function(e){
-			var phrase = $('#search').val().trim();
+		filterText: function(e){
+			var phrase = $('#filterText').val().trim();
 			this.renderList(app.Departments.search(phrase));
 		}	
 	});

@@ -12,7 +12,7 @@ var app = app || {};
 
 		events:{
 			'keypress #new' : 'createOnEnter',
-			'keyup #search' : 'search',
+			'keyup #filterText' : 'filterByText',
 			'click #add' : 'showModal'
 		},
 
@@ -36,7 +36,7 @@ var app = app || {};
 
 		render: function(){
 			// this.$el.html('');
-			this.$el.html( this.template( {title:'Empleados', header_fields: this.header} ));
+			this.$el.html( this.template( {title:'Empleados', header_fields: this.header, filterText: true, addButton:true} ));
 			this.$tbody = this.$('#rows');
 			return this;
 		},
@@ -67,8 +67,8 @@ var app = app || {};
 			},this) 
 		},
 
-		search: function(){
-			var phrase = $('#search').val().trim();
+		filterByText: function(){
+			var phrase = $('#filterText').val().trim();
 			this.renderList( this.collection.search(phrase) );
 		}
 

@@ -103,17 +103,22 @@
     <!-- END: Home Template -->
     <!-- BEGIN: Table Template -->
     <script type='text/x-handlebars-template' id='table-improv-template'>
+    <!-- Title -->
       <div class='center'>
           <h2>{{title}}</h2>
       </div>
+       <!-- Add Button -->
+       {{#if addButton}}
       <div class='right'>
         <a id='add' > 
           <i data-toggle='modal' data-target='#form-modal' class="fa fa-plus-square-o fa-3x"></i>
         </a>
       </div>
-
+      {{/if}}
+      <!-- Filter Date  -->
+      {{#if filterDate}}
       <div class='filter input-group date'>
-        <input type="text" class='form-control' id='filterDate' name='filterDate' required/>
+        <input type="text" class='form-control' id='filterDate' name='filterDate' placeholder="Filtrar por Fecha" required/>
         <span id='filter' class="input-group-addon">
           <a>
             <span class="glyphicon glyphicon-filter"></span>
@@ -125,8 +130,21 @@
           </a>
         </span>
       </div>
-
+      {{/if}}
+      <!-- Filter Text  -->
+      {{#if filterText}}
+      <div class='filter input-group'>
+        <input type="text" class='form-control' id='filterText' name='filterText' placeholder="Filtrar por Texto" required/>
+        <span id='filter' class="input-group-addon">
+          <a>
+            <span class="glyphicon glyphicon-filter"></span>
+          </a>
+        </span>
+      </div>
+      {{/if}}
+      <!-- Table  -->
       <table  class='table table-hover table-condensed'>
+      <!-- Table  Header-->
         <thead>
           <tr>
             {{#each header_fields}}
@@ -135,6 +153,7 @@
             <th></th>
           </tr>
         </thead>
+        <!-- Table Rows -->
         <tbody id='rows'>
         </tbody>
       </table>

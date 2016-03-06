@@ -7,7 +7,10 @@ var app = app || {};
 		template: Handlebars.compile( $('#table-improv-template').html() ),
 
 		events:{
-			'click #add' : 'showModal'
+			'click #add' : 'showModal',
+			'keyup #filterText' : 'filterByText',
+			'click #filter': 'filterDate',
+			'click #today': 'filterToday'
 		},
 
 		header:[
@@ -29,14 +32,19 @@ var app = app || {};
 			this.listenTo( this.collection, 'reset', this.addAll);
 
 			this.collection.fetch();
-
-			// this.render();
 		},
 
 		render: function(){
 			// this.$el.html('');
-			this.$el.html( this.template( {title:'Control de Alimentacion', header_fields: this.header} ));
+			this.$el.html( this.template( {title:'Control de Alimentacion', 
+				header_fields: this.header, 
+				filterText: true, 
+				filterDate: true, 
+				addButton:true} ));
 			this.$tbody = this.$('#rows');
+			this.$('#filterDate').datetimepicker({
+				format: 'YYYY/MM/DD'
+			});
 			return this;
 		},
 
@@ -51,7 +59,6 @@ var app = app || {};
 			this.collection.each( this.addOne, this );
 		},
 
-
 		showModal: function(e){
 			var view = new this.modalSubView({collection: this.collection});
 			Promise.resolve(app.Employees.fetch()).then(function(response){
@@ -63,13 +70,36 @@ var app = app || {};
 			this.$tbody.empty();
 			models.each(function(model){
 				this.addOne(model);
-			},this) 
+			},this); 
 		},
 
-		search: function(){
-			var phrase = $('#search').val().trim();
-			this.renderList( this.collection.search(phrase) );
-		}
+		renderListDates: function(models){
+			this.$tbody.html('');
+			var self = this;
+			models.forEach(function(model){
+				self.addOne(model);
+			});
+		},
 
+		filterByText: function(){
+			var phrase = $('#filterText').val().trim();
+			this.renderList( this.collection.search(phrase) );
+		},
+
+		filterToday: function(){
+			var current = new Date();
+			var dd = current.getDate() < 10 ? '0' + current.getDate() : current.getDate();
+			var mm = current.getMonth() < 10 ? '0' + (current.getMonth() + 1) : current.getMonth() + 1;
+			var yy = current.getFullYear();
+			var today = yy+'/'+mm+'/'+dd;
+			this.renderListDates(this.collection.filterByDate(today));
+		},
+
+		filterDate: function(){
+			var date = this.$('#filterDate').val();
+			if(date) {
+				this.renderListDates(this.collection.filterByDate(date));
+			}
+		}
 	});
 }());

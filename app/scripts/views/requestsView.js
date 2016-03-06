@@ -7,7 +7,9 @@ var app = app || {};
 		template: Handlebars.compile( $('#table-improv-template').html() ),
 
 		events: {
-			'click #add' : 'showModal'
+			'click #add' : 'showModal',
+			'click #filter': 'filterDate',
+			'click #today': 'filterToday'
 		},
 
 		header: [
@@ -31,8 +33,14 @@ var app = app || {};
 
 		render: function(){
 			// this.$el.html('');
-			this.$el.html( this.template( {title:'Solicitudes', header_fields: this.header} ));
+			this.$el.html( this.template( {title:'Solicitudes', 
+				header_fields: this.header,
+				filterDate: true,
+				addButton:true} ));
 			this.$table = this.$('#rows');
+			this.$('#filterDate').datetimepicker({
+				format: 'YYYY/MM/DD'
+			});
 			return this;
 		},
 
@@ -45,6 +53,30 @@ var app = app || {};
 				var result = yy+'-'+mm+'-'+dd;
 				return result;
 			});
+		},
+
+		renderList: function(models){
+			this.$table.html('');
+			var self = this;
+			models.forEach(function(model){
+				self.addOne(model);
+			});
+		},
+
+		filterToday: function(){
+			var current = new Date();
+			var dd = current.getDate() < 10 ? '0' + current.getDate() : current.getDate();
+			var mm = current.getMonth() < 10 ? '0' + (current.getMonth() + 1) : current.getMonth() + 1;
+			var yy = current.getFullYear();
+			var today = yy+'/'+mm+'/'+dd;
+			this.renderList(this.collection.filterByDate(today));
+		},
+
+		filterDate: function(){
+			var date = this.$('#filterDate').val();
+			if(date) {
+				this.renderList(this.collection.filterByDate(date));
+			}
 		},
 
 		addOne: function(model){
@@ -65,5 +97,6 @@ var app = app || {};
 						$('[data-toggle="tooltip"]').tooltip();
 					});
 		}
+
 	});
 }());

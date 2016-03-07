@@ -1,9 +1,9 @@
-var app = app || {};
+var Backbone = require('backbone');
 
-(function(){
-	app.Department = Backbone.Model.extend({
-		defaults: {
-			name: 'IT'
-		}
-	});
-}())
+Department = Backbone.Model.extend({
+	defaults: {
+		name: 'IT'
+	}
+});
+
+module.exports = Department;

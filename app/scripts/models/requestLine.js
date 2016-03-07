@@ -1,16 +1,16 @@
-var app = app || {};
+var Backbone = require('backbone');
 
-(function(){
-	app.RequestLine = Backbone.Model.extend({
-		defaults: {
-			requestID: '',
-			employeeID: '',
-			feeding: false,
-			transportation: false,
-			approved: false,
-			transportationConfirmation: false
-		},
+RequestLine = Backbone.Model.extend({
+	defaults: {
+		requestID: '',
+		employeeID: '',
+		feeding: false,
+		transportation: false,
+		approved: false,
+		transportationConfirmation: false
+	},
 
-		urlRoot: 'http://localhost:4003/api/requestLines'
-	});
-}())
+	urlRoot: 'http://localhost:4003/api/requestLines'
+});
+
+module.exports = RequestLine;

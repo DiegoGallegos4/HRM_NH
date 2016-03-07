@@ -1,20 +1,23 @@
-var app = app || {};
+var _ = require('underscore');
+var Backbone = require('backbone');
+// Import Models 
+var Employee = require('../models/employee');
 
-(function(){
-	var EmployeeList = Backbone.Collection.extend({
-		model: app.Employee,
+var EmployeeList = Backbone.Collection.extend({
+	model: Employee,
 
-		url: 'http://localhost:4003/api/employees',
+	url: 'http://localhost:4003/api/employees',
 
-		search: function(phrase){
-			if(phrase == '') return this;
+	search: function(phrase){
+		if(phrase == '') return this;
 
-			var pattern = new RegExp(phrase,"gi");
-			return _(this.filter(function(data){
-				return pattern.test(data.get('name')) || pattern.test(data.get('last_name'));
-			}));
-		}
-	});
+		var pattern = new RegExp(phrase,"gi");
+		return _(this.filter(function(data){
+			return pattern.test(data.get('name')) || pattern.test(data.get('last_name'));
+		}));
+	}
+});
 
-	app.Employees = new EmployeeList();
-}());
+Employees = new EmployeeList();
+
+module.exports = Employees;

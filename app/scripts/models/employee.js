@@ -1,13 +1,14 @@
-var app = app || {};
+var Backbone = require('backbone');
 
-(function(){
-	app.Employee = Backbone.Model.extend({
-		defaults: {
-			name: '',
-			lastName: '',
-			department: '',
-			completeName: '',
-			pin: ''
-		}
-	});
-}())
+Employee = Backbone.Model.extend({
+	defaults: {
+		name: '',
+		lastName: '',
+		department: '',
+		completeName: '',
+		pin: ''
+	}
+});
+
+module.exports = Employee;
+

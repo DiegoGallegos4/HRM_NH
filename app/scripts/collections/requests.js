@@ -1,17 +1,20 @@
-var app = app || {};
+var _ = require('underscore');
+var Backbone = require('backbone');
+// Import Models
+var Request = require('../models/request');
 
-(function(){
-	var RequestList = Backbone.Collection.extend({
-		model: app.Request,
+var RequestList = Backbone.Collection.extend({
+	model: Request,
 
-		url: 'http://localhost:4003/api/requests',
+	url: 'http://localhost:4003/api/requests',
 
-		filterByDate: function(date){
-			if(date == '') return this;
+	filterByDate: function(date){
+		if(date == '') return this;
 
-			return this.where({date: date});
-		}
-	});
+		return this.where({date: date});
+	}
+});
 
-	app.Requests = new RequestList();
-}());
+Requests = new RequestList();
+
+module.exports = Requests;

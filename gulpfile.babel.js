@@ -4,6 +4,10 @@ import gulpLoadPlugins from 'gulp-load-plugins';
 import browserSync from 'browser-sync';
 import del from 'del';
 import {stream as wiredep} from 'wiredep';
+import browserify from 'browserify';
+import source from 'vinyl-source-stream'
+import debowerify from 'debowerify';
+
 
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
@@ -31,6 +35,15 @@ gulp.task('scripts', () => {
     .pipe($.sourcemaps.write('.'))
     .pipe(gulp.dest('.tmp/scripts'))
     .pipe(reload({stream: true}));
+});
+
+gulp.task('browserify', () => {
+  return browserify('app/scripts/main.js')
+    .transform(debowerify)
+    .bundle()
+    .pipe(source('bundle.js'))
+    .pipe(gulp.dest('dist/js'))
+    .pipe(gulp.dest('.tmp/scripts'))
 });
 
 function lint(files, options) {
@@ -109,7 +122,7 @@ gulp.task('serve', ['styles', 'scripts', 'fonts'], () => {
   ]).on('change', reload);
 
   gulp.watch('app/styles/**/*.scss', ['styles']);
-  gulp.watch('app/scripts/**/*.js', ['scripts']);
+  gulp.watch('app/scripts/**/*.js', ['scripts','browserify']);
   gulp.watch('app/fonts/**/*', ['fonts']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);
 });
@@ -137,7 +150,7 @@ gulp.task('serve:test', ['scripts'], () => {
       }
     }
   });
-
+  
   gulp.watch('app/scripts/**/*.js', ['scripts']);
   gulp.watch('test/spec/**/*.js').on('change', reload);
   gulp.watch('test/spec/**/*.js', ['lint:test']);

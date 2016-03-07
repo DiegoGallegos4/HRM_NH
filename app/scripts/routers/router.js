@@ -1,62 +1,68 @@
-var app = app || {};
-(function(){
-	var AppRouter = Backbone.Router.extend({
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Handlebars = require('handlebars');
+Backbone.$ = $;
+// Import Views
+var HomeView = require('../views/HomeView');
+var DepartmentsView = require('../views/DepartmentViews/DepartmentsView');
+var EmployeesView = require('../views/EmployeeViews/EmployeesView');
+var RequestsView = require('../views/RequestViews/RequestsView');
+var FeedingsView = require('../views/FeedingViews/FeedingsView');
+var TransportationView = require('../views/TransportationViews/TransportationView');
 
-		routes: {
-			''     	         : 'home',
-			'home' 		     : 'home',
-			'departments'    : 'departments',
-			'employees'      : 'employees',
-			'requests' 	     : 'requests',
-			'feedings'	     : 'feedings',
-			'transportation' : 'transportation'
-		},
+var AppRouter = Backbone.Router.extend({
 
-		home: function(){
-			var view = new app.HomeView();
-			this.showView(view);
-		},
+	routes: {
+		''     	         : 'home',
+		'home' 		     : 'home',
+		'departments'    : 'departments',
+		'employees'      : 'employees',
+		'requests' 	     : 'requests',
+		'feedings'	     : 'feedings',
+		'transportation' : 'transportation'
+	},
 
-		departments: function(){
-			var view = new app.DepartmentsView();
-			this.showView(view);
-		},
+	home: function(){
+		var view = new HomeView();
+		this.showView(view);
+	},
 
-		employees: function(){
-			var view = new app.EmployeesView();
-			this.showView(view);
-		},
+	departments: function(){
+		var view = new DepartmentsView();
+		this.showView(view);
+	},
 
-		requests: function(){
-			var view = new app.RequestsView();
-			this.showView(view);
-		},
+	employees: function(){
+		var view = new EmployeesView();
+		this.showView(view);
+	},
 
-		feedings: function(){
-			var view = new app.FeedingsView();
-			this.showView(view);
-		},
+	requests: function(){
+		var view = new RequestsView();
+		this.showView(view);
+	},
 
-		transportation: function(){
-			var view = new app.TransportationView();
-			this.showView(view);
-		},
+	feedings: function(){
+		var view = new FeedingsView();
+		this.showView(view);
+	},
 
-		showView: function(view){
-			 if (this.currentView){
-		      this.currentView.clean();
-		    }
+	transportation: function(){
+		var view = new TransportationView();
+		this.showView(view);
+	},
 
-		    this.currentView = view;
-		    this.currentView.render()
+	showView: function(view){
+		 if (this.currentView){
+	      this.currentView.clean();
+	    }
 
-		    $('#containerList').html(this.currentView.el);
-		}
+	    this.currentView = view;
+	    this.currentView.render()
 
-	});
+	    $('#containerList').html(this.currentView.el);
+	}
 
-	app.Router = new AppRouter();
+});
 
-
-	Backbone.history.start();
-}())
+module.exports = AppRouter;

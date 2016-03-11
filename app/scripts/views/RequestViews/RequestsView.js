@@ -6,7 +6,6 @@ var moment = require('moment');
 var datepicker = require('eonasdan-bootstrap-datetimepicker');
 var bs = require('bootstrap-sass');
 // Import Collections
-var Requests = require('../../collections/requests');
 var Employees = require('../../collections/employees');
 // Import Views
 var RequestView = require('./RequestView');
@@ -29,20 +28,18 @@ RequestsView = Backbone.View.extend({
 	],
 
 	initialize: function(){
-		this.collection = Requests;
 		this.subView = RequestView;
 		this.modalView = RequestModalView;
 		this.subViews = [];
-
+		this.employees = new Employees();
 		this.listenTo( this.collection, 'add', this.addOne );
 		this.listenTo( this.collection, 'reset', this.addAll );
-		this.collection.fetch({reset: true});
 
-		this.helpers();
-	},
+		this.collection.fetch({reset: true});
+		this.helper;
+		},
 
 	render: function(){
-		// this.$el.html('');
 		this.$el.html( this.template( {title:'Solicitudes', 
 			header_fields: this.header,
 			filterDate: true,
@@ -52,17 +49,6 @@ RequestsView = Backbone.View.extend({
 			format: 'YYYY/MM/DD'
 		});
 		return this;
-	},
-
-	helpers: function(){
-		Handlebars.registerHelper('printDate',function(date){
-			var current = new Date(date);
-			var dd = current.getDate() < 10 ? '0' + current.getDate() : current.getDate();
-			var mm = current.getMonth() < 10 ? '0' + (current.getMonth() + 1) : current.getMonth() + 1;
-			var yy = current.getFullYear();
-			var result = yy+'-'+mm+'-'+dd;
-			return result;
-		});
 	},
 
 	renderList: function(models){
@@ -100,12 +86,9 @@ RequestsView = Backbone.View.extend({
 	},
 
 	showModal: function(e){
-		var view = new this.modalView( { collection: this.collection, model: null, title: {name: 'Crear'} });
-		Promise.resolve(Employees.fetch())
-			   .then(function(){
-					$('#form-modal').html(view.render().el);
-					$('[data-toggle="tooltip"]').tooltip();
-				});
+		var view = new this.modalView( { collection: this.collection, model: null});
+		$('#form-modal').html(view.render().el);
+		$('[data-toggle="tooltip"]').tooltip();
 	}
 });
 

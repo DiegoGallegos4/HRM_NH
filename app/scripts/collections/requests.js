@@ -3,7 +3,7 @@ var Backbone = require('backbone');
 // Import Models
 var Request = require('../models/request');
 
-var RequestList = Backbone.Collection.extend({
+var Requests = Backbone.Collection.extend({
 	model: Request,
 
 	url: 'http://localhost:4003/api/requests',
@@ -14,7 +14,5 @@ var RequestList = Backbone.Collection.extend({
 		return this.where({date: date});
 	}
 });
-
-Requests = new RequestList();
 
 module.exports = Requests;

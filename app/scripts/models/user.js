@@ -1,6 +1,6 @@
 var Backbone = require('backbone');
 
-app.User = Backbone.Model.extend({
+User = Backbone.Model.extend({
 	defaults: {
 		name: '',
 		lastName: '',
@@ -8,10 +8,10 @@ app.User = Backbone.Model.extend({
 		email:'',
 		department: '',
 		active: true,
-
+		role: ''
 	},
 
-	urlRoot: 'http://localhost:4003/api/user'
+	urlRoot: 'http://localhost:4003/api/users'
 });
 
 module.exports = User;

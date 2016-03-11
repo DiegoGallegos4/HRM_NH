@@ -9,9 +9,34 @@ window._ = _;
 // Import app
 var app = require('./routers/router');
 
-// Init Code
-var ENTER_KEY = 13;
+// Enter Key make it global
+window.ENTER_KEY = 13;
 
+var sync = Backbone.sync;
+
+Backbone.sync = function(method, model, options){
+    options.beforeSend = function(xhr){
+        xhr.setRequestHeader('x-access-token', window.localStorage.token);
+    }
+    return sync.apply(this, [method, model, options]);
+};
+
+Backbone.Collection.prototype.parse = function(response){
+    if(_.isObject(response.profile)){
+        window.localStorage.profile = response.profile.role;
+        if(response.success){
+            Backbone.history.navigate('#login',true);
+        }
+    }
+    
+    if(_.isObject(response.data)){
+        return response.data
+    }else{
+        return response
+    }
+};
+
+// Cleans Views after leaving
 Backbone.View.prototype.clean = function () {
 	this.remove();
 	this.unbind();
@@ -54,4 +79,5 @@ Backbone.View.prototype.BooleanHelper = Handlebars.registerHelper('ifCond', func
 });
 
 new app();
+
 Backbone.history.start();

@@ -4,7 +4,7 @@ Employee = Backbone.Model.extend({
 	defaults: {
 		name: '',
 		lastName: '',
-		department: '',
+		departmentId: '',
 		completeName: '',
 		pin: ''
 	}

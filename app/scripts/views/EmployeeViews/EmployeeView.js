@@ -2,6 +2,9 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var Handlebars = require('handlebars');
 Backbone.$ = $;
+// Import Collection
+var Departments = require('../../collections/departments');
+var Employees = require('../../collections/employees');
 
 EmployeeView = Backbone.View.extend({
 	tagName: 'tr',
@@ -15,7 +18,7 @@ EmployeeView = Backbone.View.extend({
 		'click .destroy': 'delete'
 	},
 
-	template: Handlebars.compile( $('#row-template-employee').html() ),
+	template: Handlebars.compile( $('#employee-row-template').html() ),
 
 	initialize: function(){
 		this.listenTo(this.model, 'change', this.render);
@@ -23,24 +26,26 @@ EmployeeView = Backbone.View.extend({
 	},
 
 	render: function(){
-		this.$el.html( this.template(this.model.attributes) );
-
+		this.$el.html( this.template({model: this.model.attributes, departments: this.collection.toJSON() }) );
 		this.$input = this.$('.edit');
 		return this;
 	},
 
 	edit: function(e){
 		this.$el.addClass('editing');
-		e.stopPropagation();
 	},
 
 	close: function(){
 		var editData = {}
 		this.$input.each(function(i,elt){
-			editData[elt.className.split(' ')[1].split('-')[1]] = $(elt).val();
+			var key = elt.className.split(' ')[1].split('-')[1]
+			editData[key] = $(elt).val();
 		})
-		if(editData) this.model.save( editData );
-		this.$el.removeClass('editing');
+		console.log(editData);
+
+		if(editData) this.model.save( editData, {wait: true});
+		var self = this;
+		self.$el.removeClass('editing');		
 	},
 
 	updateOnEnter: function(e){

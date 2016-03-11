@@ -3,6 +3,10 @@ var Backbone = require('backbone');
 var Handlebars = require('handlebars');
 Backbone.$ = $;
 var bsvalidator = require('bootstrap-validator');
+// Import Collections
+var User = require('../../models/user');
+// Import Views
+var FeedingModalView = require('./FeedingModalView');
 
 FeedingView = Backbone.View.extend({
 	tagName: 'tr',
@@ -46,7 +50,8 @@ FeedingView = Backbone.View.extend({
 	},
 
 	addPin: function(e){
-		var view = new app.FeedingPinModalView({model: this.model});
+		var requestID = this.$('td')[0].id
+		var view = new FeedingPinModalView({model: this.model, employeeID: employeeID});
 		$('#form-modal').html(view.render().el);
 	}
 });
@@ -69,14 +74,35 @@ FeedingPinModalView = Backbone.View.extend({
 		this.$form = this.$('#form-feedingPin');
 		this.$pin = this.$('#pin');
 		this.$form.validator();	
+
 		return this;
+	},
+
+	verify: function(){
+
 	},
 
 	checkPin: function(e){
 		e.preventDefault();
-		if (this.$pin.val() == this.model.get('pin')){
-			this.model.save({confirm: true});
-			this.close();
+		var self = this;
+		if(!this.requestID){
+			var user = new User();
+			Promise.resolve(user.fetch({id: employeeID})).then(function(user){
+				console.log(user.get('pin'));
+				if (self.$pin.val() == user.get('pin')){
+					self.model.save({confirm: true});
+					this.close();
+				}else{
+					console.log('wrong pin');
+				}
+			})
+		}else{
+			if (this.$pin.val() == this.model.get('pin')){
+				this.model.save({confirm: true});
+				this.close();
+			}else{
+				console.log('wrong pin');
+			}
 		}
 	},
 

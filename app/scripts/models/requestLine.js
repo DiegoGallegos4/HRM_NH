@@ -4,7 +4,7 @@ RequestLine = Backbone.Model.extend({
 	defaults: {
 		requestID: '',
 		employeeID: '',
-		feeding: false,
+		feeding: true,
 		transportation: false,
 		approved: false,
 		transportationConfirmation: false

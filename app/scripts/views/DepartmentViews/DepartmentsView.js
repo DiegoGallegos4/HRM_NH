@@ -3,8 +3,6 @@ var Backbone = require('backbone');
 var Handlebars = require('handlebars');
 Backbone.$ = $;
 var bs = require('bootstrap-sass');
-// Import Collections
-var Departments = require('../../collections/departments');
 // Import Views
 var DepartmentView = require('./DepartmentView');
 var DepartmentModalView = require('./DepartmentModalView');
@@ -25,13 +23,9 @@ DepartmentsView = Backbone.View.extend({
 	],
 
 	initialize: function(){
-		this.collection = Departments;
 		this.subView = DepartmentView;
 		this.modalView = DepartmentModalView;
 		this.subViews = [];
-
-		// if(this.collection.size() > 0)
-//          	this.collection.each(this.addOne, this);
 
 		this.listenTo(this.collection, 'add', this.addOne);
 		this.listenTo(this.collection, 'reset', this.addAll);

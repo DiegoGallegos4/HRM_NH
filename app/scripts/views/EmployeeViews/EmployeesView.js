@@ -22,17 +22,24 @@ EmployeesView = Backbone.View.extend({
 	header:[
 			{'name':'Nombre'},
 			{'name':'Apellido'},
-			{'name':'Departamento'}
+			{'name':'Departamento'},
+			{'name':'PIN'}
 	],
 
 	initialize: function(){
-		this.collection = Employees;
 		this.subView = EmployeeView;
 		this.modalView = EmployeeModalView;
+		this.departments = new Departments();
 
 		this.listenTo( this.collection, 'add', this.addOne);
 		this.listenTo( this.collection, 'reset', this.addAll);
-		this.collection.fetch({reset: true});
+
+		var self = this;
+		Promise.resolve(self.departments.fetch({reset: true})).then(function(res){
+			return res;
+		}).then(function(res){
+			self.collection.fetch({reset: true});
+		});
 	},
 
 	render: function(){
@@ -42,8 +49,9 @@ EmployeesView = Backbone.View.extend({
 	},
 
 	addOne: function(model){
-		var view = new this.subView({model: model});
-		this.$tbody.append( view.render().el );
+		var self = this;
+		var view = new self.subView({model: model, collection: this.departments});
+		self.$tbody.append( view.render().el );
 	},
 
 	addAll: function(){
@@ -53,11 +61,8 @@ EmployeesView = Backbone.View.extend({
 
 
 	showModal: function(e){
-		var view = new this.modalView({collection: this.collection });
-		Promise.resolve(Departments.fetch()).then(function(response){
-			console.log(response);
-			$('#form-modal').html(view.render().el);
-		})
+		var view = new this.modalView({collection: this.collection,model: this.departments });
+		$('#form-modal').html(view.render().el);
 	},
 
 	renderList: function(models){

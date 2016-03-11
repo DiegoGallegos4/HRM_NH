@@ -3,7 +3,7 @@ var Backbone = require('backbone');
 // Import Models
 var Feeding = require('../models/feeding');
 
-var FeedingList = Backbone.Collection.extend({
+var Feedings = Backbone.Collection.extend({
 	model: Feeding,
 
 	url: 'http://localhost:4003/api/feedings',
@@ -18,8 +18,10 @@ var FeedingList = Backbone.Collection.extend({
 	},
 
 	filterByDate: function(date){
-		if(date == '') return this;
-		var ms = []
+		if(date == ''){
+			return this.models
+		};
+		var ms = [];
 		this.models.forEach(function(model){
 			if(Date.parse(model.get('date')) == Date.parse(date)){
 				ms.push(model);
@@ -28,7 +30,5 @@ var FeedingList = Backbone.Collection.extend({
 		return ms;
 	}
 });
-
-Feedings = new FeedingList();
 
 module.exports = Feedings;

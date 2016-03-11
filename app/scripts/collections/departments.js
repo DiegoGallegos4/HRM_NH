@@ -3,7 +3,7 @@ var Backbone = require('backbone');
 // Import Model
 var Department = require('../models/department');
 
-var DepartmentList = Backbone.Collection.extend({
+var Departments = Backbone.Collection.extend({
 	model: Department,
 
 	url: 'http://localhost:4003/api/departments',
@@ -17,8 +17,6 @@ var DepartmentList = Backbone.Collection.extend({
 		}));
 	}
 });
-
-Departments = new DepartmentList();
 
 module.exports = Departments;
 

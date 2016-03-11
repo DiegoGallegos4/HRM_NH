@@ -4,33 +4,17 @@
     <meta charset="utf-8">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-signin-client_id" content="401162567026-o2lhj1kg5gdbe9ukb0pnl01dfacgnhoo.apps.googleusercontent.com">
+
     <title>Todo</title>
     <link rel="stylesheet" href="styles/main.css">
     <script src="/bower_components/modernizr/modernizr.js"></script>
     <link rel="stylesheet" type="text/css" href="/bower_components/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
   </head>
   <body>
-    <div class="container">
-      <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container-fluid">
-          <div class="navbar-header">
-               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="#">Panorama</a>
-          </div>
-          <!-- Collect the nav links, forms, and other content for toggling -->
-          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="#"></a></li>
-            </ul>
-          </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-      </nav>
+    <div id ='container' class="container">
     </div><!-- /.container-->
     
     <section id='main' class='container'>
@@ -48,21 +32,48 @@
     </section>
 
     <!-- TEMPLATES -->
+    <!-- BEGIN: Navbar-->
+    <script type='text/x-handlebars-template' id='navbar-template'>
+      <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-header">
+               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">Panorama</a>
+          </div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-left">
+            {{#ifCond profile '==' allowedRole}}
+              <li><a href="#user">Usuarios</a></li>
+            {{/ifCond}}
+            <li><a href="#dashboard">General</a></li>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
+    </script>
+    <!-- END: Navbar -->
     <!-- BEGIN: Table List Template -->
     <script type='text/x-handlebars-template' id='row-department-template'>
       <td>
         <div class='view'>
           <label>{{name}}</label>
-          <button class='destroy'></button>
         </div>
         <input class='edit' value="{{name}}">
       </td>
       <td>
         <div class='view'>
           <label>{{abbr}}</label>
-          <button class='destroy'></button>
         </div>
         <input class='edit' value="{{abbr}}">
+      </td>
+      <td>
+        <button class='destroy'></button>
       </td>
     </script>
     <!-- END: Table List Template -->
@@ -161,24 +172,34 @@
     </script>
     <!-- END: Table Template -->
     <!-- BEGIN: Row Template Employee-->
-    <script type='text/x-handlebars-template' id='row-template-employee'>
+    <script type='text/x-handlebars-template' id='employee-row-template'>
         <td>
           <div class='view'>
-            <label>{{name}}</label>
+            <label>{{model.name}}</label>
           </div>
-          <input class='edit edit-name' value="{{name}}">
+          <input class='edit edit-name form-control' value="{{model.name}}">
         </td>
         <td>
           <div class='view'>
-            <label>{{lastName}}</label>
+            <label>{{model.lastName}}</label>
           </div>
-          <input class='edit edit-last_name' value="{{lastName}}">
+          <input class='edit edit-lastName form-control' value="{{model.lastName}}">
         </td>
         <td>
           <div class='view'>
-            <label>{{department}}</label>
+            <label>{{model.department.abbr}}</label>
           </div>
-          <input class='edit edit-department' value="{{department}}">
+          <select class='edit edit-departmentId form-control' value='{{model.departmentId}}'>
+            {{#each departments}}
+              <option value="{{id}}">{{name}}</option>
+            {{/each}}
+          </select>
+        </td>
+        <td>
+          <div class='view'>
+            <label>{{model.pin}}</label>
+          </div>
+          <input class='edit edit-pin form-control' value="{{model.pin}}">
         </td>
         <td>
           <button class='destroy'></button>
@@ -195,27 +216,26 @@
               <form role='form' data-toggle='validator' id='form-employee'>
                 <div class='form-group'>
                   <label for="name" class='control-label'>Nombre</label>
-                  <input type="text" class='form-control' id='name' required></input>
+                  <input type="text" class='form-control' name='name' id='name' required></input>
                   <div class="help-block with-errors"></div>
                 </div>
                 <div class='form-group'>
                   <label for="lastName" class='control-label'>Apellido</label>
-                  <input type="text" class='form-control' id='lastName' required></input>
+                  <input type="text" class='form-control' id='lastName' name='lastName' required></input>
                   <div class="help-block with-errors"></div>
                 </div>
                 <div class='form-group'>
-                  <label for="department" class='control-label'>Departamento</label>
-                  <input list='depts' class='form-control' id='department' required></input>
-                  <datalist id='depts'>
+                  <label for="departmentId" class='control-label' >Departamento</label>
+                  <select class='form-control' id='departmentId' name='departmentId' >
                     {{#each depts}}
-                    <option value="{{name}}"></option>
+                    <option value="{{id}}">{{abbr}}</option>
                     {{/each}}
-                  </datalist>
+                  </select>
                   <div class="help-block with-errors"></div>
                 </div>
                 <div class='form-group'>
                   <label for="pin" class='control-label'>Pin</label>
-                  <input type="text" class='form-control' id='pin' required></input>
+                  <input type="text" class='form-control' id='pin' name='pin' required></input>
                   <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group">
@@ -391,7 +411,7 @@
       </table>
     </script>
     <!-- END:Request Table Template -->
-    <!-- BEGIN:Request Row Template -->
+    <!-- BEGIN:RequestLine Row Template -->
     <script type='text/x-handlebars-template' id='requestLine-row-template'>
         <td>
           <input list='emps' name='employeeID' value="{{model.employeeID}}" id='{{model.id}}' required></input>
@@ -401,9 +421,9 @@
             {{/each}}
           </datalist>
         </td>
-         <td>
+         <!-- <td>
             <input type='checkbox' name="feeding" {{#if model.feeding}} checked {{/if}}>
-          </td>
+          </td> -->
           <td>
             <input type='checkbox' name="approved" {{#if model.approved}} checked {{/if}}>
           </td>
@@ -417,7 +437,7 @@
             <button class='deleteLine'><i class="fa fa-remove"></i></button>
         </td>
     </script>
-    <!-- END:Request Row Template -->
+    <!-- END:RequestLine Row Template -->
     <!-- BEGIN: Row Template Request-->
     <script type='text/x-handlebars-template' id='row-template-request'>
         <td>{{reason}}</td>
@@ -432,7 +452,7 @@
     <!-- END: Row Template Request-->
     <!-- BEGIN: Row Feeding Template-->
     <script type='text/x-handlebars-template' id='row-feeding-template'>
-        <td>
+        <td id='{{requestID}}'>
           {{#if requestID}}
           <span data-toggle='tooltip' title='Solicitado' data-placement='top'>
              <i class="fa fa-star"></i> 
@@ -470,14 +490,141 @@
         <td>{{printDate date}}</td>
     </script>
     <!-- END: Row Transportation Template-->
-        
-<!-- 
-    <script src="/bower_components/moment/min/moment.min.js"></script>
-    <script src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <!-- BEGIN: Row User Template -->
+    <script type='text/x-handlebars-template' id='row-user-template'>
+        <td>
+          <div class="view">
+            <label>{{name}}</label>
+          </div>
+          <input class='edit edit-name' value="{{name}}">
+        </td>
+        <td>
+          <div class="view">
+            <label>{{username}}</label>
+          </div>
+          <input class='edit edit-username' value="{{username}}">
+        </td>
+        <td>
+          <div class="view">
+            <label>{{email}}</label>
+          </div>
+          <input class='edit edit-email' value="{{email}}">
+        </td>
+        <td>
+          <div class="view">
+            <label>{{department}}</label>
+          </div>
+          <input class='edit edit-department' value="{{department}}">
+        </td>
+        <td>
+          <div class="view">
+            <label>{{role}}</label>
+          </div>
+          <input class='edit edit-role' value="{{role}}">
+        </td>         
+        <td>
+          <input class='active' type='checkbox' {{#if active}} checked {{/if}}/>
+        </td>
+        <td>
+          <button class='deleteLine'><i class="fa fa-remove"></i></button>
+        </td>
+    </script>
+    <!-- END: Row User Template -->
+    <!-- BEGIN: Modal User Template -->
+    <script type='text/x-handlebars-template' id='modal-user-template'>
+        <div class='modal-content'>
+          <div class="modal-header">
+            <h4>Nuevo Usuario</h4>
+          </div>
+          <div class="modal-body">
+            <form role='form' data-toggle='validator' id='form-user'>
+              <div class='form-group'>
+                <label for="name" class='control-label'>Nombre</label>
+                <input type="text" class='form-control' id='name' name='name' placeholder="Nombre" required></input>
+                <div class="help-block with-errors"></div>
+              </div>
+              <div class='form-group'>
+                <label for="username" class='control-label'>Usuario</label>
+                <input type="text" class='form-control' id='username' name='username' placeholder="Usuario" required></input>
+                <div class="help-block with-errors"></div>
+              </div>
+              <div class='form-group'>
+                <label for="email" class='control-label'>Email</label>
+                <input type="text" class='form-control' id='email' name='email' placeholder="Email" required></input>
+                <div class="help-block with-errors"></div>
+              </div>
+              <div class='form-group'>
+                  <label for="departament" class='control-label'>Departamento</label>
+                  <input id="departament"  class='form-control' list='departments' name="departament" required></input>
+                  <datalist id='departments'>
+                  {{#each departments}}
+                    <option value="{{name}}"></option>
+                  {{/each}}
+                  </datalist>
+                  <div class="help-block with-errors"></div>
+              </div>
+              <div class='form-group'>
+                <label for="department" class='control-label'>Rol</label>
+                <select class='form-control' name="role">
+                  <option value="leader">Lider</option>
+                  <option value="admin">Admin</option>
+                  <option value="hr">RH</option>
+                  <option value="sysadmin">SysAdmin</option>
+                  <option value="external">Externo</option>
+                </select>
+                <div class="help-block with-errors"></div>
+              </div>
+              <div class='form-group'>
+                <label for="active" class='control-label'>Activo</label>
+                <input type="checkbox" class='form-control' name='active' id='active'></input>
+                <div class="help-block with-errors"></div>
+              </div>
+            </form>
+            <div id='lineError' class="text-danger"></div>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <button id='save' type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+          </div>
+        </div>
+    </script>
+    <!-- END: Modal User Template -->
+    <!-- BEGIN: Login Template -->
+    <script type='text/x-handlebars-template' id='login-template'>
+      <button id='authorize-button'>Authorize</button> 
+    </script>
+    <!-- END: Login Template -->  
+    <!-- BEGIN: NotFound Template -->
+    <script type='text/x-handlebars-template' id='notFound-template'>
+      <div class='row text-center bg-warning' style="width: 100%;height:100%">
+        <div>
+          <h1 class='text-info'>404 Pagina no Encontrada</h1>
+          <h3 class='text-warning'>REGRESA POR DONDE VINISTE</h3>
+        </div>
+        <div>
+          <h4>¿No sabes por donde? <a href="#">Por aqui!</a></h4>
+        </div>
+      </div>
+    </script>
+    <!-- END: NotFound Template -->
+    <!-- BEGIN:MyRequests Row Template -->
+    <script type='text/x-handlebars-template' id='myRequests-row-template'>
+          <td>
+            {{model.employeeID}}
+          </td>
+          <td>
+            {{model.request.date}}
+          </td>
+          <td>
+            {{model.request.feedingType}}
+          </td>
+          <td>
+            <input type='checkbox' name="approved" {{#if model.approved}} checked {{/if}} disabled>
+          </td>
+    </script>
+    <!-- END:MyRequests Row Template -->
     
-    
- -->
-
     <script src="scripts/bundle.js"></script>
   </body>
 </html>

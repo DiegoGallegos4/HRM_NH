@@ -1,51 +1,33 @@
-var $ = require('jquery');
 var Backbone = require('backbone');
 var Handlebars = require('handlebars');
-Backbone.$ = $;
 var moment = require('moment');
 var datepicker = require('eonasdan-bootstrap-datetimepicker');
-var bs = require('bootstrap-sass');
 // Import Collections
-var Employees = require('../../collections/employees');
-// Import Views
-var FeedingView = require('./FeedingView');
-var FeedingModalView = require('./FeedingModalView');
+var RequestLines = require('../collections/requestLines');
 
-FeedingsView = Backbone.View.extend({
+DashboardView = Backbone.View.extend({
 	template: Handlebars.compile( $('#table-improv-template').html() ),
 
-	events:{
-		'click #add' : 'showModal',
-		'keyup #filterText' : 'filterByText',
-		'click #filter': 'filterDate',
-		'click #today': 'filterToday'
-	},
-
 	header:[
-			{'name':''},
 			{'name':'Empleado'},
 			{'name':'Fecha'},
 			{'name':'Jornada'},
-			{'name':'Precio'},
-			{'name':'<i class="fa fa-check-circle-o"></i>'}
-	],
+			{'name':'Confirmado'}
+	], 
 
 	initialize: function(){
-		this.subView = FeedingView;
-		this.modalView = FeedingModalView;
-		this.employees = new Employees();
+		this.collection = RequestLines;
+		this.subView = MyRequestsView;
 		
-		
-		this.listenTo( this.collection, 'add', this.addOne);
-		this.listenTo( this.collection, 'reset', this.addAll);
+		this.listenTo( this.collection, 'add', this.addOne );
+		this.listenTo( this.collection, 'reset', this.addAll );
 
 		this.collection.fetch({reset: true});
-		this.employees.fetch();
-		this.helper;
+		this.helpers;
 	},
 
 	render: function(){
-		this.$el.html( this.template( {title:'Control de Alimentacion', 
+		this.$el.html( this.template( {title:'Mis Solicitudes', 
 			header_fields: this.header, 
 			filterText: true, 
 			filterDate: true, 
@@ -54,7 +36,7 @@ FeedingsView = Backbone.View.extend({
 		this.$('#filterDate').datetimepicker({
 			format: 'YYYY/MM/DD'
 		});
-		return this;
+		return this;	
 	},
 
 	addOne: function(model){
@@ -68,11 +50,7 @@ FeedingsView = Backbone.View.extend({
 		this.collection.each( this.addOne, this );
 	},
 
-	showModal: function(e){
-		var view = new this.modalView({collection: this.collection});
-		$('#form-modal').html(view.render().el);
-	},
-
+	// Filter Methods
 	renderList: function(models){
 		this.$tbody.empty();
 		models.each(function(model){
@@ -108,4 +86,27 @@ FeedingsView = Backbone.View.extend({
 	}
 });
 
-module.exports = FeedingsView;
+MyRequestsView = Backbone.View.extend({
+	tagName: 'tr',
+
+	className: 'text-center',
+
+	template: Handlebars.compile( $('#myRequests-row-template').html() ),
+
+	events: {
+		'click .deleteLine': 'delete'
+	},
+
+	render: function(){
+		this.$el.html( this.template({ model: this.model.attributes }));
+		return this;
+	},
+
+	onClose: function(){
+		this.model.off('change',this.render);
+		this.model.off('destroy',this.remove);
+	}
+});
+
+
+module.exports = DashboardView;

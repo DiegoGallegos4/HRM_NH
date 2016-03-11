@@ -44,6 +44,8 @@
     }
   },
   "dependencies": {
-    "rethinkdb": "^2.2.1"
+    "google-client-api": "^1.0.4",
+    "rethinkdb": "^2.2.1",
+    "watchify": "^3.7.0"
   }
 }

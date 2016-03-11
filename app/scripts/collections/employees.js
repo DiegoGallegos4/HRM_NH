@@ -3,7 +3,7 @@ var Backbone = require('backbone');
 // Import Models 
 var Employee = require('../models/employee');
 
-var EmployeeList = Backbone.Collection.extend({
+var Employees = Backbone.Collection.extend({
 	model: Employee,
 
 	url: 'http://localhost:4003/api/employees',
@@ -17,7 +17,5 @@ var EmployeeList = Backbone.Collection.extend({
 		}));
 	}
 });
-
-Employees = new EmployeeList();
 
 module.exports = Employees;

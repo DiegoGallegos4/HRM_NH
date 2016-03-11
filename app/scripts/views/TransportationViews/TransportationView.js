@@ -5,7 +5,6 @@ Backbone.$ = $;
 var moment = require('moment');
 var datepicker = require('eonasdan-bootstrap-datetimepicker');
 // Import Collections
-var Requests = require('../../collections/requests');
 var RequestLines = require('../../collections/requestLines');
 // Import Views
 var TransportationLineView = require('./TransportationLineView');
@@ -29,7 +28,6 @@ TransportationView = Backbone.View.extend({
 	],
 
 	initialize: function(){
-		this.collection = Requests;
 		this.collectionLine = RequestLines;
 		this.subView = TransportationLineView;
 		
@@ -77,9 +75,7 @@ TransportationView = Backbone.View.extend({
 
 	filterDate: function(){
 		var date = this.$('#filterDate').val();
-		if(date) {
-			this.renderList(this.collection.filterByDate(date));
-		}
+		this.renderList(this.collection.filterByDate(date));
 	},
 
 	generateModel: function(requestModel, rLModel){

@@ -17,17 +17,11 @@ EmployeeModalView = Backbone.View.extend({
 		'click #save': 'addEmployee'
 	},
 
-	initialize: function(){
-		Departments.fetch();
-	},
-
 	render: function(){
-		if(Departments.toJSON()){
-			this.$el.html( this.template( {depts: Departments.toJSON()} ));
-			this.$form = this.$('#form-employee');
-			this.$form.validator();
-			return this;
-		}
+		this.$el.html( this.template( {depts: this.model.toJSON()} ));
+		this.$form = this.$('#form-employee');
+		this.$form.validator();
+		return this;
 	},
 
 	addEmployee: function(e){
@@ -36,21 +30,25 @@ EmployeeModalView = Backbone.View.extend({
 		this.$form.validator('validate');
 		var formData = {};
 		var invalid = false;
-		this.$('#form-employee div').children('input').each(function(i,elt){
-			if( $(elt).val() != ''){
-				formData[elt.id] = $(elt).val();
+
+		this.$form.serializeArray().forEach(function(elt,i,array){
+			if( elt.value != ''){
+				formData[elt.name] = elt.value;
 			}else{
 				invalid = true;
 			}
-		}); 
+		});
 
 		if(formData['name'] && formData['lastName']) formData['completeName'] = formData['name'] + ' ' + formData['lastName'];
 
 		if(!invalid){
 			this.collection.create(formData);
-			$('.modal').modal('hide');
-			this.close();
-			this.render();
+			var self = this
+			Promise.resolve( self.collection.fetch({reset: true}) ).then(function(response){
+				$('.modal').modal('hide');
+				self.close();
+				self.render();
+			})
 		};
 	},
 

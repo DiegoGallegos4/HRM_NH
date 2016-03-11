@@ -6,7 +6,6 @@ var moment = require('moment');
 var datepicker = require('eonasdan-bootstrap-datetimepicker');
 var bsvalidator = require('bootstrap-validator');
 // Import Collections
-var Requests = require('../../collections/requests');
 var RequestLines = require('../../collections/requestLines');
 var Feedings = require('../../collections/feedings');
 var Employees = require('../../collections/employees');
@@ -32,26 +31,25 @@ RequestModalView = Backbone.View.extend({
 
 	tableHeader:[
 		{name: 'Empleado'},
-		{name: '<i class="fa fa-beer"></i>',tooltip: 'Alimentacion'},
 		{name:'<i class="fa fa-check-circle"></i>' ,tooltip: 'Aprobar'},
 		{name: '<i class="fa fa-bus"></i>',tooltip: 'Transporte'},
 		{name: '<i class="fa fa-thumbs-o-up"></i>',tooltip: 'Confirmar Transporte'}
 	],
 
 	initialize: function(){
-		this.collection = Requests;
 		this.collectionLine = RequestLines;
 		this.collectionFeeding = Feedings;
+		this.employees = new Employees();
 		this.subViews = []
 		this.lunchTime = "11:00 AM";
 		this.supperTime = "4:00 PM";
 		this.transportationTime = "7:00 PM";
 
 		this.collectionLine.fetch();
+		this.employees.fetch();
 	},
 
 	render: function(){
-		Employees.fetch();
 		this.$el.html( this.template({model: this.model, title: this.title}) );
 		this.$('#tableContainer').html( this.templateTable({header_fields: this.tableHeader}) );
 
@@ -79,7 +77,6 @@ RequestModalView = Backbone.View.extend({
 				var models = self.collectionLine.lines(self.ID);
 				return models;
 			}).then(function(rows){
-
 				rows.forEach(function(elt,i,array){
 					var viewR = new RequestLineView({model: elt });
 					self.subViews.push(viewR);
@@ -96,8 +93,8 @@ RequestModalView = Backbone.View.extend({
 
 		var conditionalSupper = ($('#typeFeeding').val() == 'Cena') && (Date.parse('01/01/2016 ' + this.supperTime) > Date.parse('01/01/2016 ' + nowTime));
 		var conditionalLunch = ($('#typeFeeding').val() == 'Almuerzo') && (Date.parse('01/01/2016 ' + this.lunchTime) > Date.parse('01/01/2016 ' + nowTime));
-		if( conditionalSupper || conditionalLunch || true){
-			var view = new RequestLineView();
+		if( conditionalSupper || conditionalLunch ){
+			var view = new RequestLineView({collection: this.employees});
 			this.$('#rows').append( view.render().el );
 			this.verifyTransport();
 		} else{
@@ -105,6 +102,19 @@ RequestModalView = Backbone.View.extend({
 				.html('No puedes ingresar solicitudes de Almuerzo despues de las 11:00 am ni solicitudes de Cena despues de la 4:00pm. Contactarse con RH')
 				.show().hide(10000);
 		}				
+	},
+
+	approveFeeding: function(e){
+		if(window.localStorage.profile == 'admin' || window.localStorage.profile == 'sysadmin'){
+			var val = $(e.currentTarget).prop('checked');
+
+			$(e.currentTarget).prop('checked', val);
+		}else{
+			e.preventDefault();
+			this.$('#lineError')
+					.html('Solo Administracion puede aprobar Alimentacion')
+					.show().hide(8000);
+		}
 	},
 
 	verifyTransport: function(e){
@@ -125,14 +135,23 @@ RequestModalView = Backbone.View.extend({
 	},
 
 	confirmTransportation: function(e){
-		if(this.$('input[name="transportation"]').prop('checked') == true ){
-			$(e.currentTarget).prop('checked',true);
+		if(window.localStorage.profile == 'hr' || window.localStorage.profile == 'sysadmin'){
+			if(this.$('input[name="transportation"]').prop('checked') == true ){
+				var val = $(e.currentTarget).prop('checked');
+				$(e.currentTarget).prop('checked', val);
+			}else{
+				e.preventDefault();
+				this.$('#lineError')
+					.html('La hora de salida del empleado no aplica para transporte')
+					.show().hide(8000);
+			}
 		}else{
 			e.preventDefault();
 			this.$('#lineError')
-				.html('La hora de salida del empleado no aplica para transporte')
-				.show().hide(5000);
+					.html('Solo Recursos Humanos puede confirmar el transporte')
+					.show().hide(8000);
 		}
+		
 	},
 
 	addRequest: function(e){
@@ -185,7 +204,7 @@ RequestModalView = Backbone.View.extend({
 				formData['requestLines'].push(formLineData[key]);
 			}	
 		}
-		console.log(formData);
+		// console.log(formData);
 		// console.log(formLineData);
 		if(!invalid){
 			var self = this;
@@ -201,7 +220,6 @@ RequestModalView = Backbone.View.extend({
 						}
 					}
 				});
-				console.log('later');
 			}else{
 				var modelRequest = self.collection.get(self.ID);
 				modelRequest.save(formData);

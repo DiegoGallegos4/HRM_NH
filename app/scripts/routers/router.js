@@ -33,6 +33,7 @@ var AppRouter = Backbone.Router.extend({
 		'transportation' : 'transportation',
 		'user'			 : 'user',
 		'login'			 : 'login',
+		'logout'		 : 'logout',
 		'dashboard'		 : 'dashboard',
 		'*notFound'		 : 'notFound'
 	},
@@ -86,13 +87,19 @@ var AppRouter = Backbone.Router.extend({
 	},
 
 	login: function(){
-		$('#container').html();
+		$('#containerList').html('');
+		$('#container').html('');
 		var view = new LoginView();
 		this.showView(view);
 	},
 
+	logout: function(){
+		window.localStorage.token = '';
+		this.login()
+	},
+
 	notFound: function(){
-		$('#container').html();
+		$('#container').html('');
 		var view = new NotFoundView()
 		this.showView(view);
 	},
@@ -100,7 +107,8 @@ var AppRouter = Backbone.Router.extend({
 	// Helpers
 
 	showView: function(view){
-		 if (this.currentView){
+		$('#containerList').html('');
+		if (this.currentView){
 	      this.currentView.clean();
 	    }
 

@@ -165,5 +165,29 @@ tr.editing {
 .filter{
   width: 250px;
   margin:15px 0px;
-  // position: relative;
 }
+
+.btn-container{
+  text-align: center;
+  padding-top: 10%;
+
+  .title{
+    color: #fff;
+  }
+
+  #authorize-button{
+    color: #5BB3F6;
+    font-size: 1.5em;
+  }
+}
+
+figure{
+  text-align: center;
+
+  img{
+    opacity: 0.5;
+    padding-top: 10px;
+  }
+}
+
+

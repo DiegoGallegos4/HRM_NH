@@ -46,7 +46,6 @@ RequestModalView = Backbone.View.extend({
 		this.transportationTime = "7:00 PM";
 
 		this.collectionLine.fetch();
-		this.employees.fetch();
 	},
 
 	render: function(){
@@ -221,6 +220,7 @@ RequestModalView = Backbone.View.extend({
 					}
 				});
 			}else{
+				console.log(self.collection);
 				var modelRequest = self.collection.get(self.ID);
 				modelRequest.save(formData);
 

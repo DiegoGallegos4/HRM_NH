@@ -22,7 +22,7 @@ DashboardView = Backbone.View.extend({
 		this.listenTo( this.collection, 'add', this.addOne );
 		this.listenTo( this.collection, 'reset', this.addAll );
 
-		this.collection.fetch({reset: true});
+		this.byCreator();
 		this.helpers;
 	},
 
@@ -37,6 +37,18 @@ DashboardView = Backbone.View.extend({
 			format: 'YYYY/MM/DD'
 		});
 		return this;	
+	},
+	
+	// Fetch Collection filter by creator
+	byCreator: function(){
+		var self = this;
+		this.filterVar = 'created_by';
+		this.collection.fetch({reset:true}).done(function(response){
+			var filterType = _.filter(self.collection.models, function(item){
+				return item.get('request').created_by == response.profile.username
+			});
+			self.collection.reset(filterType);
+		});
 	},
 
 	addOne: function(model){

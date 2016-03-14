@@ -29,6 +29,7 @@ RequestView = Backbone.View.extend({
 	initialize: function(){
 		this.listenTo(this.model, 'change', this.render);
 		this.listenTo(this.model, 'destroy', this.remove);
+		console.log(this.collection);
 	},
 
 	render: function(){
@@ -40,10 +41,11 @@ RequestView = Backbone.View.extend({
 	update: function(e){
 		var requestID = $(e.currentTarget).attr('id');
 		var request = new Request({id: requestID});
+		var self = this;
 		Promise.resolve(request.fetch()).then(function(response){
 			return response;
 		}).then(function(json){
-			var view = new RequestModalView( {collection: Requests, model: json, title: {name: 'Editar'}} );
+			var view = new RequestModalView( {collection: self.collection, model: json} );
 			$('#form-modal').html(view.render().el);
 			$('[data-toggle="tooltip"]').tooltip();
 		})

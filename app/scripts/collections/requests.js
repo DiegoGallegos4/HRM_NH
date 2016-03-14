@@ -9,9 +9,16 @@ var Requests = Backbone.Collection.extend({
 	url: 'http://localhost:4003/api/requests',
 
 	filterByDate: function(date){
-		if(date == '') return this;
+		if(date == '') return this.models;
 
-		return this.where({date: date});
+		var ms = [];
+		this.models.forEach(function(model){
+			if(Date.parse(model.get('date')) == Date.parse(date)){
+				ms.push(model);
+			}
+		});
+		
+		return ms
 	}
 });
 

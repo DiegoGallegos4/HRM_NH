@@ -6,12 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="google-signin-client_id" content="401162567026-o2lhj1kg5gdbe9ukb0pnl01dfacgnhoo.apps.googleusercontent.com">
 
-    <title>Todo</title>
+    <title>HRM</title>
     <link rel="stylesheet" href="styles/main.css">
     <script src="/bower_components/modernizr/modernizr.js"></script>
     <link rel="stylesheet" type="text/css" href="/bower_components/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
     <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <!-- favicons -->
+    <link rel="apple-touch-icon" sizes="57x57" href="favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/faviconsfavicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16x16.png">
+    <link rel="manifest" href="favicons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
   </head>
   <body>
     <div id ='container' class="container">
@@ -52,6 +70,9 @@
               <li><a href="#user">Usuarios</a></li>
             {{/ifCond}}
             <li><a href="#dashboard">General</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+            <li><a href="#logout">Salir</a></li>
             </ul>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -582,7 +603,7 @@
             </form>
             <div id='lineError' class="text-danger"></div>
           </div>
-          <div class="modal-body">
+           <div class="modal-body">
             <div class="form-group">
                 <button id='save' type="submit" class="btn btn-primary">Guardar</button>
             </div>
@@ -592,7 +613,13 @@
     <!-- END: Modal User Template -->
     <!-- BEGIN: Login Template -->
     <script type='text/x-handlebars-template' id='login-template'>
-      <button id='authorize-button'>Authorize</button> 
+      <figure>
+        <img src="favicons/ms-icon-150x150.png" alt="NH LOGO">
+      </figure>
+      <div class='btn-container'>
+        <h2 class='title'>¡Bienvenido!</h2>
+        <button id='authorize-button' class='btn btn-default'>Ingresa</button> 
+      </div>
     </script>
     <!-- END: Login Template -->  
     <!-- BEGIN: NotFound Template -->
@@ -614,7 +641,7 @@
             {{model.employeeID}}
           </td>
           <td>
-            {{model.request.date}}
+            {{printDate model.request.date}}
           </td>
           <td>
             {{model.request.feedingType}}

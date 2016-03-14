@@ -20,6 +20,12 @@ LoginView = Backbone.View.extend({
 
 	render: function(){
 		this.$el.html( this.template() );
+		this.$el.css({
+			'width': '100%',
+			'height': '100%',
+			'background-image':'url("images/NH.jpg")',
+			'background-size':'cover'
+		});
 		return this;
 	},
 

@@ -31,13 +31,15 @@ RequestsView = Backbone.View.extend({
 		this.subView = RequestView;
 		this.modalView = RequestModalView;
 		this.subViews = [];
-		this.employees = new Employees();
 		this.listenTo( this.collection, 'add', this.addOne );
 		this.listenTo( this.collection, 'reset', this.addAll );
 
 		this.collection.fetch({reset: true});
 		this.helper;
-		},
+
+		employees = new Employees();
+		employees.fetch();
+	},
 
 	render: function(){
 		this.$el.html( this.template( {title:'Solicitudes', 
@@ -70,13 +72,11 @@ RequestsView = Backbone.View.extend({
 
 	filterDate: function(){
 		var date = this.$('#filterDate').val();
-		if(date) {
-			this.renderList(this.collection.filterByDate(date));
-		}
+		this.renderList(this.collection.filterByDate(date));
 	},
 
 	addOne: function(model){
-		var view = new this.subView({model: model});
+		var view = new this.subView({collection: this.collection, model: model});
 		this.$table.append( view.render().el );
 	},
 

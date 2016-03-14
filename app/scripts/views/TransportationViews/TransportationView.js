@@ -41,7 +41,6 @@ TransportationView = Backbone.View.extend({
 	render: function(){
 		this.$el.html( this.template( {title:'Transporte', 
 			header_fields: this.header,
-			filterText: true,
 			filterDate: true
 		}));
 		this.$table = this.$('#rows');

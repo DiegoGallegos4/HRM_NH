@@ -18,17 +18,15 @@ Backbone.sync = function(method, model, options){
     options.beforeSend = function(xhr){
         xhr.setRequestHeader('x-access-token', window.localStorage.token);
     }
+    
     return sync.apply(this, [method, model, options]);
 };
 
 Backbone.Collection.prototype.parse = function(response){
     if(_.isObject(response.profile)){
         window.localStorage.profile = response.profile.role;
-        if(response.success){
-            Backbone.history.navigate('#login',true);
-        }
-    }
-    
+    };
+
     if(_.isObject(response.data)){
         return response.data
     }else{

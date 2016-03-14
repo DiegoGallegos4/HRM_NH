@@ -44,6 +44,7 @@ gulp.task('browserify', () => {
     .pipe(source('bundle.js'))
     .pipe(gulp.dest('dist/js'))
     .pipe(gulp.dest('.tmp/scripts'))
+    .pipe(reload({stream: true}));
 });
 
 function lint(files, options) {
@@ -103,7 +104,7 @@ gulp.task('extras', () => {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('serve', ['styles', 'scripts', 'fonts'], () => {
+gulp.task('serve', ['styles', 'fonts'], () => {
   browserSync({
     notify: false,
     port: 9000,
@@ -122,7 +123,7 @@ gulp.task('serve', ['styles', 'scripts', 'fonts'], () => {
   ]).on('change', reload);
 
   gulp.watch('app/styles/**/*.scss', ['styles']);
-  gulp.watch('app/scripts/**/*.js', ['scripts','browserify']);
+  gulp.watch('app/scripts/**/*.js', ['browserify']);
   gulp.watch('app/fonts/**/*', ['fonts']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);
 });

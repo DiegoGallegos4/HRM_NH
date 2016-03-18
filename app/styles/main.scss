@@ -16,8 +16,13 @@ $icon-font-path: '../fonts/';
 }
 
 body { 
-    padding-top: 65px; 
     background-color: #F0F0F0;
+}
+
+body,html,#containerList{
+  height: 100%;
+  width: 100%;
+  margin: 0;
 }
 
 
@@ -28,7 +33,6 @@ body {
   border-radius: 5px;
   border: 1px solid #C4C4C4;
   box-shadow: 2px 2px #888888 ;
-  height: 600px;
   min-height: 100%;
   overflow: auto !important;
 }
@@ -79,7 +83,7 @@ table{
     height: 180px;
     padding-top: 50px;  
     border: 8px solid;
-    background-color: #FF5722;//#017d98;
+    background-color: #FF5722;
     color: white;
     font-size: 1.5em;
     border-radius: 15px;
@@ -87,7 +91,7 @@ table{
 }
 
 a.thumbnail:hover, a.thumbnail:focus, a.thumbnail.active {
-    border-color: #FFCCBC;//#F57C00;//#076075;
+    border-color: #FFCCBC;
     color: #FFFFFF !important;
 }
 
@@ -172,7 +176,7 @@ tr.editing {
   padding-top: 10%;
 
   .title{
-    color: #fff;
+    color: #00829C;
   }
 
   #authorize-button{
@@ -183,10 +187,12 @@ tr.editing {
 
 figure{
   text-align: center;
+  padding-top: 10px;
+  position: relative;
 
   img{
     opacity: 0.5;
-    padding-top: 10px;
+    border: 1px solid white;
   }
 }
 

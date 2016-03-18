@@ -21,7 +21,6 @@ var Navbar = require('../views/NavbarView');
 var NotFoundView = require('../views/NotFoundView');
 var DashboardView = require('../views/DashboardView');
 
-
 var AppRouter = Backbone.Router.extend({
 	routes: {
 		''     	         : 'home',
@@ -88,7 +87,6 @@ var AppRouter = Backbone.Router.extend({
 
 	login: function(){
 		$('#containerList').html('');
-		$('#container').html('');
 		var view = new LoginView();
 		this.showView(view);
 	},
@@ -99,7 +97,7 @@ var AppRouter = Backbone.Router.extend({
 	},
 
 	notFound: function(){
-		$('#container').html('');
+		$('#containerList').html('');
 		var view = new NotFoundView()
 		this.showView(view);
 	},
@@ -119,9 +117,10 @@ var AppRouter = Backbone.Router.extend({
 	},
 
 	showNav: function(){
+		$('#nav').html('');
 		this.nav = new Navbar();
 		this.nav.render();
-	    $('#container').html(this.nav.el);
+	    $('#nav').html(this.nav.el);
 	}
 
 });

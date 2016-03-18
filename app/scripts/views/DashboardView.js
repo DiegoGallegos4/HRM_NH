@@ -3,7 +3,7 @@ var Handlebars = require('handlebars');
 var moment = require('moment');
 var datepicker = require('eonasdan-bootstrap-datetimepicker');
 // Import Collections
-var RequestLines = require('../collections/requestLines');
+var Feedings = require('../collections/feedings');
 
 DashboardView = Backbone.View.extend({
 	template: Handlebars.compile( $('#table-improv-template').html() ),
@@ -12,11 +12,12 @@ DashboardView = Backbone.View.extend({
 			{'name':'Empleado'},
 			{'name':'Fecha'},
 			{'name':'Jornada'},
+			{'name':'PIN'},
 			{'name':'Confirmado'}
 	], 
 
 	initialize: function(){
-		this.collection = RequestLines;
+		this.collection = new Feedings();
 		this.subView = MyRequestsView;
 		
 		this.listenTo( this.collection, 'add', this.addOne );
@@ -45,7 +46,7 @@ DashboardView = Backbone.View.extend({
 		this.filterVar = 'created_by';
 		this.collection.fetch({reset:true}).done(function(response){
 			var filterType = _.filter(self.collection.models, function(item){
-				return item.get('request').created_by == response.profile.username
+				return item.get('createdBy') == response.profile.username
 			});
 			self.collection.reset(filterType);
 		});

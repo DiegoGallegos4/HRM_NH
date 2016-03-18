@@ -7,6 +7,9 @@ import {stream as wiredep} from 'wiredep';
 import browserify from 'browserify';
 import source from 'vinyl-source-stream'
 import debowerify from 'debowerify';
+import watchify from 'watchify';
+import reactify from 'reactify';
+import merge from 'lodash.merge';
 
 
 const $ = gulpLoadPlugins();
@@ -24,6 +27,7 @@ gulp.task('styles', () => {
     .pipe($.autoprefixer({browsers: ['> 1%', 'last 2 versions', 'Firefox ESR']}))
     .pipe($.sourcemaps.write())
     .pipe(gulp.dest('.tmp/styles'))
+    .pipe(browserSync.stream())
     .pipe(reload({stream: true}));
 });
 
@@ -37,14 +41,30 @@ gulp.task('scripts', () => {
     .pipe(reload({stream: true}));
 });
 
+
+
 gulp.task('browserify', () => {
-  return browserify('app/scripts/main.js')
+  var customOpts = {
+    entries: ['app/scripts/main.js'],
+    debug: true,
+    packageCache: {},
+    cache: {},
+    fullPaths: true
+  };
+
+  var opts = merge({}, customOpts, watchify.args);
+  // browserify('app/scripts/main.js') 
+  return watchify(browserify(opts))
     .transform(debowerify)
     .bundle()
+    .on('error', function(err){
+      console.log(err)
+      this.emit('end');
+    })
     .pipe(source('bundle.js'))
     .pipe(gulp.dest('dist/js'))
     .pipe(gulp.dest('.tmp/scripts'))
-    .pipe(reload({stream: true}));
+    .pipe(reload({stream: true}))
 });
 
 function lint(files, options) {

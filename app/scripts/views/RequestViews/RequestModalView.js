@@ -38,12 +38,13 @@ RequestModalView = Backbone.View.extend({
 
 	initialize: function(){
 		this.collectionLine = RequestLines;
-		this.collectionFeeding = Feedings;
+		this.collectionFeeding = new Feedings();
 		this.employees = new Employees();
 		this.subViews = []
 		this.lunchTime = "11:00 AM";
 		this.supperTime = "4:00 PM";
 		this.transportationTime = "7:00 PM";
+
 
 		this.collectionLine.fetch();
 	},
@@ -153,6 +154,7 @@ RequestModalView = Backbone.View.extend({
 		
 	},
 
+	
 	addRequest: function(e){
 		e.preventDefault();
 		this.$form.validator('validate');
@@ -182,6 +184,7 @@ RequestModalView = Backbone.View.extend({
 				feeding[index] = {};
 				feeding[index]['feedingType'] = formData['feedingType'];
 				feeding[index]['date'] = formData['date'];
+				feeding[index]['approved'] = formData['approved']
 				//update
 				if($(elt).attr('id')){
 					formLineData[index]['id'] = $(elt).attr('id');
@@ -207,6 +210,7 @@ RequestModalView = Backbone.View.extend({
 		// console.log(formLineData);
 		if(!invalid){
 			var self = this;
+			// New Request
 			if(!self.ID){
 				self.collection.create(formData,{
 					wait: true,
@@ -225,11 +229,13 @@ RequestModalView = Backbone.View.extend({
 				modelRequest.save(formData);
 
 				for(var key in formLineData){
+					// Existing RequestLine
 					if(formLineData[key]['id']){
 						var modelLine = self.collectionLine.get(formLineData[key]['id']);
 						Promise.resolve( modelLine.save(formLineData[key]) ).then(function(response){
 							Promise.resolve(self.collectionLine.fetch());
 						});
+						// New Request Line
 					}else{
 						formLineData[key]['requestID'] = self.ID;
 						Promise.resolve(self.collectionLine.create(formLineData[key])).then(function(response){

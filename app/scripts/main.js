@@ -6,6 +6,8 @@ Backbone.$ = $;
 window.jQuery = $;
 window.$ = $;
 window._ = _;
+// CSS
+// require('../styles/main.scss');
 // Import app
 var app = require('./routers/router');
 

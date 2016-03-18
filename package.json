@@ -3,13 +3,22 @@
   "engines": {
     "node": ">=0.12.0"
   },
+  "scripts": {
+    "start": "node server.js"
+  },
   "devDependencies": {
     "babel-core": "^6.4.0",
+    "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.3.13",
     "browser-sync": "^2.2.1",
     "browserify": "^13.0.0",
+    "browserify-shim": "^3.8.12",
+    "copy-webpack-plugin": "^1.1.1",
+    "css-loader": "^0.23.1",
     "debowerify": "^1.4.1",
     "del": "^1.1.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.5",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.0.1",
     "gulp-babel": "^6.1.1",
@@ -26,8 +35,18 @@
     "gulp-sourcemaps": "^1.5.0",
     "gulp-uglify": "^1.1.0",
     "gulp-useref": "^3.0.0",
+    "history": "^2.0.1",
+    "html-loader": "^0.4.3",
+    "jsx-loader": "^0.13.2",
     "main-bower-files": "^2.5.0",
+    "node-sass": "^3.4.2",
+    "postcss-loader": "^0.8.2",
+    "react-hot-loader": "^1.3.0",
+    "sass-loader": "^3.2.0",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
     "vinyl-source-stream": "^1.1.0",
+    "webpack-dev-server": "^1.14.1",
     "wiredep": "^2.2.2"
   },
   "eslintConfig": {
@@ -44,8 +63,16 @@
     }
   },
   "dependencies": {
+    "babel-cli": "^6.6.5",
+    "babel-core": "^6.7.2",
+    "babel-plugin-react-html-attrs": "^2.0.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-2": "^6.5.0",
     "google-client-api": "^1.0.4",
+    "react": "^0.14.7",
+    "reactify": "^1.1.1",
     "rethinkdb": "^2.2.1",
-    "watchify": "^3.7.0"
+    "watchify": "^3.7.0",
+    "webpack": "^1.12.14"
   }
 }

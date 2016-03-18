@@ -21,7 +21,7 @@ RequestsView = Backbone.View.extend({
 	},
 
 	header: [
-			{'name': 'Razon'},
+			{'name': 'Motivo'},
 			{'name': 'Jornada'},
 			{'name': 'Fecha'},
 			{'name': 'Hora'}

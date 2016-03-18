@@ -18,7 +18,6 @@ RequestView = Backbone.View.extend({
 
 	events: {
 		'blur .edit': 'close',
-		// 'dblclick td': 'edit',
 		'keypress .edit' : 'updateOnEnter',
 		'click .deleteLine': 'delete',
 		'click .update': 'update'
@@ -29,7 +28,6 @@ RequestView = Backbone.View.extend({
 	initialize: function(){
 		this.listenTo(this.model, 'change', this.render);
 		this.listenTo(this.model, 'destroy', this.remove);
-		console.log(this.collection);
 	},
 
 	render: function(){

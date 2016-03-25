@@ -10,7 +10,7 @@ var Departments = require('../../collections/departments');
 var EmployeeView = require('./EmployeeView');
 var EmployeeModalView = require('./EmployeeModalView');
 
-EmployeesView = Backbone.View.extend({
+var EmployeesView = Backbone.View.extend({
 	template: Handlebars.compile( $('#table-improv-template').html() ),
 
 	events:{

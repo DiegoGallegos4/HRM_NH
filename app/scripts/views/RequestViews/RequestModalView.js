@@ -7,12 +7,11 @@ var datepicker = require('eonasdan-bootstrap-datetimepicker');
 var bsvalidator = require('bootstrap-validator');
 // Import Collections
 var RequestLines = require('../../collections/requestLines');
-var Feedings = require('../../collections/feedings');
 var Employees = require('../../collections/employees');
 // Import Views
 var RequestLineView = require('./RequestLineView');
 
-RequestModalView = Backbone.View.extend({
+var RequestModalView = Backbone.View.extend({
 	tagName:'div',
 
 	className: 'modal-dialog',
@@ -38,13 +37,11 @@ RequestModalView = Backbone.View.extend({
 
 	initialize: function(){
 		this.collectionLine = RequestLines;
-		this.collectionFeeding = new Feedings();
 		this.employees = new Employees();
 		this.subViews = []
 		this.lunchTime = "11:00 AM";
 		this.supperTime = "4:00 PM";
 		this.transportationTime = "7:00 PM";
-
 
 		this.collectionLine.fetch();
 	},
@@ -88,6 +85,7 @@ RequestModalView = Backbone.View.extend({
 
 	addNewRow: function(row){
 		var now = new Date(Date.now());
+		var requestDate = new Date(this.$('#'))
 		var nowTime = now.getHours() % 12 + ':' + (now.getMinutes() < 10 ? ('0' + now.getMinutes()) : now.getMinutes())
 			  + ' ' + (now.getHours() > 12 ? 'PM' : 'AM');
 
@@ -104,18 +102,18 @@ RequestModalView = Backbone.View.extend({
 		}				
 	},
 
-	approveFeeding: function(e){
-		if(window.localStorage.profile == 'admin' || window.localStorage.profile == 'sysadmin'){
-			var val = $(e.currentTarget).prop('checked');
+	// approveFeeding: function(e){
+	// 	if(window.localStorage.profile == 'admin' || window.localStorage.profile == 'sysadmin'){
+	// 		var val = $(e.currentTarget).prop('checked');
 
-			$(e.currentTarget).prop('checked', val);
-		}else{
-			e.preventDefault();
-			this.$('#lineError')
-					.html('Solo Administracion puede aprobar Alimentacion')
-					.show().hide(8000);
-		}
-	},
+	// 		$(e.currentTarget).prop('checked', val);
+	// 	}else{
+	// 		e.preventDefault();
+	// 		this.$('#lineError')
+	// 				.html('Solo Administracion puede aprobar Alimentacion')
+	// 				.show().hide(8000);
+	// 	}
+	// },
 
 	verifyTransport: function(e){
 		var time = $('#hour').val()
@@ -131,7 +129,6 @@ RequestModalView = Backbone.View.extend({
 				});
 			}
 		}
-		
 	},
 
 	confirmTransportation: function(e){
@@ -177,23 +174,29 @@ RequestModalView = Backbone.View.extend({
 		formData['requestLines'] = [];
 
 		$('tr td').children('input').each(function(i,elt){
-			if( counter%5 == 0) {
+			if( counter%4 == 0) {
 				index = index + 1;
 				formLineData[index] = {};
+
+				//If updating Request then put the requestID to RequestLines
+				if(this.ID) formLineData[index]['requestID'] = this.ID;
 
 				feeding[index] = {};
 				feeding[index]['feedingType'] = formData['feedingType'];
 				feeding[index]['date'] = formData['date'];
 				feeding[index]['approved'] = formData['approved']
-				//update
+
 				if($(elt).attr('id')){
+					// Updating RequestLine
 					formLineData[index]['id'] = $(elt).attr('id');
 				}
 			}
+
 			if($(elt).attr('type') == 'checkbox'){
 				formLineData[index][$(elt).attr('name')] = $(elt).is(':checked');
 			}else{
 				formLineData[index][$(elt).attr('name')] = $(elt).val();
+
 				if($(elt).attr('name') == 'employeeID'){
 					feeding[index][$(elt).attr('name')] = $(elt).val();
 				}
@@ -207,24 +210,15 @@ RequestModalView = Backbone.View.extend({
 			}	
 		}
 		// console.log(formData);
-		// console.log(formLineData);
+		console.log(formLineData);
 		if(!invalid){
 			var self = this;
 			// New Request
 			if(!self.ID){
-				self.collection.create(formData,{
-					wait: true,
-					success: function(response){
-						for(var key in formLineData){
-							formLineData[key]['requestID'] = response.id;
-							feeding[key]['requestID'] = response.id
-							// app.RequestLines.create(formLineData[key]);
-							self.collectionFeeding.create(feeding[key]);
-						}
-					}
-				});
+				self.collection.create(formData,{wait: true});
+				// UpdateRequest
 			}else{
-				console.log(self.collection);
+				
 				var modelRequest = self.collection.get(self.ID);
 				modelRequest.save(formData);
 

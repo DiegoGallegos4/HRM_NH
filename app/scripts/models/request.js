@@ -1,6 +1,6 @@
 var Backbone = require('backbone');
 
-Request = Backbone.Model.extend({
+var Request = Backbone.Model.extend({
 	defaults: {
 		reason: 'Obras Adicionales',
 		date: '',

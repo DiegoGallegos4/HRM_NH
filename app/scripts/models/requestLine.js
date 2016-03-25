@@ -1,6 +1,6 @@
 var Backbone = require('backbone');
 
-RequestLine = Backbone.Model.extend({
+var RequestLine = Backbone.Model.extend({
 	defaults: {
 		requestID: '',
 		employeeID: '',

@@ -25,7 +25,7 @@ var RequestLineList = Backbone.Collection.extend({
 	}
 });
 
-RequestLines = new RequestLineList();
+var RequestLines = new RequestLineList();
 
 module.exports = RequestLines;
 

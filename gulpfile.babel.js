@@ -10,6 +10,8 @@ import debowerify from 'debowerify';
 import watchify from 'watchify';
 import reactify from 'reactify';
 import merge from 'lodash.merge';
+import assign from 'lodash/object/assign';
+import babelify from 'babelify';
 
 
 const $ = gulpLoadPlugins();
@@ -47,14 +49,14 @@ gulp.task('browserify', () => {
   var customOpts = {
     entries: ['app/scripts/main.js'],
     debug: true,
-    packageCache: {},
+    extensions: ['.js','.jsx'],
     cache: {},
-    fullPaths: true
+    package: {}
   };
 
-  var opts = merge({}, customOpts, watchify.args);
-  // browserify('app/scripts/main.js') 
-  return watchify(browserify(opts))
+  var opts = assign({},watchify.args,customOpts);
+  return watchify(browserify('./app/scripts/main.js',watchify.args))
+    .transform(babelify, {ignore: ['./bower_components/**/*'], presets: ['es2015','react']})
     .transform(debowerify)
     .bundle()
     .on('error', function(err){

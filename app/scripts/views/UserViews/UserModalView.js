@@ -4,7 +4,7 @@ var Handlebars = require('handlebars');
 Backbone.$ = $;
 var bsvalidator = require('bootstrap-validator');
 
-UserModalView = Backbone.View.extend({
+var UserModalView = Backbone.View.extend({
 	tagName:'div',
 
 	className: 'modal-dialog',

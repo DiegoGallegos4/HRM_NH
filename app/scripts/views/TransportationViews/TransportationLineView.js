@@ -3,7 +3,7 @@ var Backbone = require('backbone');
 var Handlebars = require('handlebars');
 Backbone.$ = $;
 
-TransportationLineView = Backbone.View.extend({
+var TransportationLineView = Backbone.View.extend({
 	tagName: 'tr',
 
 	className: 'data-row text-center',

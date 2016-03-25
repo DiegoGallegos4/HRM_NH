@@ -6,16 +6,19 @@ Backbone.$ = $;
 window.jQuery = $;
 window.$ = $;
 window._ = _;
+
 // CSS
 // require('../styles/main.scss');
+
 // Import app
 var app = require('./routers/router');
 
 // Enter Key make it global
 window.ENTER_KEY = 13;
 
-var sync = Backbone.sync;
 
+// Override sync to put a token on the header on every call for authentication purposes
+var sync = Backbone.sync;
 Backbone.sync = function(method, model, options){
     options.beforeSend = function(xhr){
         xhr.setRequestHeader('x-access-token', window.localStorage.token);
@@ -24,6 +27,7 @@ Backbone.sync = function(method, model, options){
     return sync.apply(this, [method, model, options]);
 };
 
+// Get the sepecific data from the server
 Backbone.Collection.prototype.parse = function(response){
     if(_.isObject(response.profile)){
         window.localStorage.profile = response.profile.role;
@@ -36,8 +40,11 @@ Backbone.Collection.prototype.parse = function(response){
     }
 };
 
-// Cleans Views after leaving
+// Clean Views after navigating away from view
 Backbone.View.prototype.clean = function () {
+    $('#containerList').css({
+        'margin-top':'0px'
+    });
 	this.remove();
 	this.unbind();
     _.each(this.subViews, function(subView){
@@ -46,6 +53,7 @@ Backbone.View.prototype.clean = function () {
     });
 };
 
+// Helper for Handlebars
 Backbone.View.prototype.helper = Handlebars.registerHelper('printDate',function(date){
 		var current = new Date(date);
 		var dd = current.getDate() < 10 ? '0' + current.getDate() : current.getDate();
@@ -78,6 +86,7 @@ Backbone.View.prototype.BooleanHelper = Handlebars.registerHelper('ifCond', func
     }
 });
 
+// Kick off app
 new app();
 
 Backbone.history.start();

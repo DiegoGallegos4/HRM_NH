@@ -3,7 +3,7 @@ var Backbone = require('backbone');
 var Handlebars = require('handlebars');
 Backbone.$ = $;
 
-HomeView = Backbone.View.extend({
+var HomeView = Backbone.View.extend({
 	template: Handlebars.compile( $('#home-template').html() ),
 
 	icons: [

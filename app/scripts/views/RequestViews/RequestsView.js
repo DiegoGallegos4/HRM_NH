@@ -11,7 +11,7 @@ var Employees = require('../../collections/employees');
 var RequestView = require('./RequestView');
 var RequestModalView = require('./RequestModalView');
 
-RequestsView = Backbone.View.extend({
+var RequestsView = Backbone.View.extend({
 	template: Handlebars.compile( $('#table-improv-template').html() ),
 
 	events: {

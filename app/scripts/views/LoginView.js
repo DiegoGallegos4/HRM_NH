@@ -4,7 +4,9 @@ var Handlebars = require('handlebars');
 require('oauth-js');
 var Users = require('../collections/users');
 
-LoginView = Backbone.View.extend({
+var LoginView = Backbone.View.extend({
+	name: 'LoginView',
+
 	events: {
 		'click #authorize-button' : 'onSignIn'
 	},
@@ -20,9 +22,12 @@ LoginView = Backbone.View.extend({
 
 	render: function(){
 		this.$el.html( this.template() );
+		$('#containerList').css({
+	        'margin-top':'80px'
+	    })
 		this.$el.css({
 			'width': '100%',
-			'height': '100%',
+			'min-height': '500px',
 			'background-image':'url("images/NH.jpg")',
 			'background-size':'cover'
 		});
@@ -35,12 +40,12 @@ LoginView = Backbone.View.extend({
 			var token = result.id_token;
 			result.me()
 			.done(function(response){
+				window.localStorage.prof = JSON.stringify(response);
 				Promise.resolve($.ajax({
 					url: 'http://localhost:4003/auth',
 					type: 'POST',
 					data: {id_token: token, user: response}
 				})).then(function(response){
-					console.log(response);
 					if(response.token){
 						window.localStorage.token = response.token;
 						Backbone.history.navigate('',true);

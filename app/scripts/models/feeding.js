@@ -1,6 +1,6 @@
 var Backbone = require('backbone');
 
-Feeding = Backbone.Model.extend({
+var Feeding = Backbone.Model.extend({
 	defaults: {
 		employeeID: '' ,
 		price: 0.0,
@@ -10,7 +10,9 @@ Feeding = Backbone.Model.extend({
 		payment: false,
 		pin: '',
 		feedingType: ''
-	}
+	},
+
+	urlRoot: 'http://localhost:4003/api/feedings',
 });
 
 module.exports = Feeding;

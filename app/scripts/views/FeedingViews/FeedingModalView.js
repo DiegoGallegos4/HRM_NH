@@ -8,7 +8,7 @@ var bsvalidator = require('bootstrap-validator');
 // Import Collections 
 var Employees = require('../../collections/employees');
 
-FeedingModalView = Backbone.View.extend({
+var FeedingModalView = Backbone.View.extend({
 	tagName:'div',
 
 	className: 'modal-dialog',

@@ -11,7 +11,7 @@ var Employees = require('../../collections/employees');
 var FeedingView = require('./FeedingView');
 var FeedingModalView = require('./FeedingModalView');
 
-FeedingsView = Backbone.View.extend({
+var FeedingsView = Backbone.View.extend({
 	template: Handlebars.compile( $('#table-improv-template').html() ),
 
 	events:{

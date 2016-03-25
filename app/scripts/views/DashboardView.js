@@ -5,7 +5,7 @@ var datepicker = require('eonasdan-bootstrap-datetimepicker');
 // Import Collections
 var Feedings = require('../collections/feedings');
 
-DashboardView = Backbone.View.extend({
+var DashboardView = Backbone.View.extend({
 	template: Handlebars.compile( $('#table-improv-template').html() ),
 
 	header:[
@@ -43,7 +43,6 @@ DashboardView = Backbone.View.extend({
 	// Fetch Collection filter by creator
 	byCreator: function(){
 		var self = this;
-		this.filterVar = 'created_by';
 		this.collection.fetch({reset:true}).done(function(response){
 			var filterType = _.filter(self.collection.models, function(item){
 				return item.get('createdBy') == response.profile.username
@@ -99,7 +98,7 @@ DashboardView = Backbone.View.extend({
 	}
 });
 
-MyRequestsView = Backbone.View.extend({
+var MyRequestsView = Backbone.View.extend({
 	tagName: 'tr',
 
 	className: 'text-center',

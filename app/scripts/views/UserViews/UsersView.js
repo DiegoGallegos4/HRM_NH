@@ -9,7 +9,7 @@ var Departments = require('../../collections/departments');
 var UserModalView = require('./UserModalView');
 var UserView = require('./UserView');
 
-UsersView = Backbone.View.extend({
+var UsersView = Backbone.View.extend({
 	template: Handlebars.compile( $('#table-improv-template').html() ),
 
 	events: {

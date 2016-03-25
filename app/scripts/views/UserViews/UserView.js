@@ -3,7 +3,7 @@ var Backbone = require('backbone');
 var Handlebars = require('handlebars');
 Backbone.$ = $;
 
-UserView = Backbone.View.extend({
+var UserView = Backbone.View.extend({
 	tagName: 'tr',
 
 	className: 'text-center',

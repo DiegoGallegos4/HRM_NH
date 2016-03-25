@@ -6,7 +6,7 @@ var bsvalidator = require('bootstrap-validator');
 // Import Collections
 var Departments = require('../../collections/departments');
 
-EmployeeModalView = Backbone.View.extend({
+var EmployeeModalView = Backbone.View.extend({
 	tagName:'div',
 
 	className: 'modal-dialog',

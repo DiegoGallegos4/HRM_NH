@@ -11,7 +11,7 @@ var RequestLines = require('../../collections/requestLines');
 // Import Views
 var RequestModalView = require('./RequestModalView');
 
-RequestView = Backbone.View.extend({
+var RequestView = Backbone.View.extend({
 	tagName: 'tr',
 
 	className: 'data-row text-center',

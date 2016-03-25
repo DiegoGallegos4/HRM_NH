@@ -6,7 +6,7 @@ Backbone.$ = $;
 var Departments = require('../../collections/departments');
 var Employees = require('../../collections/employees');
 
-EmployeeView = Backbone.View.extend({
+var EmployeeView = Backbone.View.extend({
 	tagName: 'tr',
 
 	className: 'data-row text-center',

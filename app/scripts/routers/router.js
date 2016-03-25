@@ -20,6 +20,10 @@ var LoginView = require('../views/LoginView');
 var Navbar = require('../views/NavbarView');
 var NotFoundView = require('../views/NotFoundView');
 var DashboardView = require('../views/DashboardView');
+import HelloMessage from '../components/test';
+// Dependencies
+var React = require('react');
+var ReactDOM = require('react-dom');
 
 var AppRouter = Backbone.Router.extend({
 	routes: {
@@ -34,61 +38,66 @@ var AppRouter = Backbone.Router.extend({
 		'login'			 : 'login',
 		'logout'		 : 'logout',
 		'dashboard'		 : 'dashboard',
+		'test'			 : 'test',
 		'*notFound'		 : 'notFound'
+	},
+
+	test: function(){
+		ReactDOM.render(<HelloMessage name="Diego" />,$('#main').get(0));
 	},
 
 	home: function(){
 		this.showNav();
 		var view = new HomeView();
-		this.showView(view);
+		this.checkLogin(view);
 	},
 
 	dashboard: function(){
 		this.showNav();
 		var view = new DashboardView();
-		this.showView(view);
+		this.checkLogin(view);
 	},
 
 	departments: function(){
 		this.showNav();
 		var view = new DepartmentsView({ collection: new Departments() });
-		this.showView(view);
+		this.checkLogin(view);
 	},
 
 	employees: function(){
 		this.showNav();
 		var view = new EmployeesView({ collection: new Employees()});
-		this.showView(view);
+		this.checkLogin(view);
 	},
 
 	requests: function(){
 		this.showNav();
 		var view = new RequestsView({collection: new Requests()});
-		this.showView(view);
+		this.checkLogin(view);
 	},
 
 	feedings: function(){
 		this.showNav();
 		var view = new FeedingsView({collection: new Feedings()});
-		this.showView(view);
+		this.checkLogin(view);
 	},
 
 	transportation: function(){
 		this.showNav();
 		var view = new TransportationView({collection: new Requests});
-		this.showView(view);
+		this.checkLogin(view);
 	},
 
 	user: function(){
 		this.showNav();
 		var view = new UserView({collection: new Users()});
-		this.showView(view);
+		this.checkLogin(view);
 	},
 
 	login: function(){
-		$('#containerList').html('');
+		$('#nav').html('');
 		var view = new LoginView();
-		this.showView(view);
+		this.checkLogin(view);
 	},
 
 	logout: function(){
@@ -99,20 +108,15 @@ var AppRouter = Backbone.Router.extend({
 	notFound: function(){
 		$('#containerList').html('');
 		var view = new NotFoundView()
-		this.showView(view);
+		this.checkLogin(view);
 	},
 
 	// Helpers
-
 	showView: function(view){
 		$('#containerList').html('');
-		if (this.currentView){
-	      this.currentView.clean();
-	    }
-
+		if (this.currentView) this.currentView.clean();
 	    this.currentView = view;
 	    this.currentView.render()
-
 	    $('#containerList').html(this.currentView.el);
 	},
 
@@ -121,8 +125,20 @@ var AppRouter = Backbone.Router.extend({
 		this.nav = new Navbar();
 		this.nav.render();
 	    $('#nav').html(this.nav.el);
-	}
+	},
 
+	checkLogin: function(view){
+		if(window.localStorage.token !== ''){
+			if(view.name !== 'LoginView'){
+				this.showView(view);
+			}else{
+				Backbone.history.navigate('',true)
+			}
+		}else{
+			this.showView(new LoginView);
+			Backbone.history.navigate('#login',true)
+		}
+	}
 });
 
 module.exports = AppRouter;

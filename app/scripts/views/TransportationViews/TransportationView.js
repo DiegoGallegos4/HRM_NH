@@ -10,7 +10,7 @@ var RequestLines = require('../../collections/requestLines');
 var TransportationLineView = require('./TransportationLineView');
 
 
-TransportationView = Backbone.View.extend({
+var TransportationView = Backbone.View.extend({
 	template: Handlebars.compile( $('#table-improv-template').html() ),
 
 	events: {

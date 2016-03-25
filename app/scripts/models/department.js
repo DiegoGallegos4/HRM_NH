@@ -1,6 +1,6 @@
 var Backbone = require('backbone');
 
-Department = Backbone.Model.extend({
+var Department = Backbone.Model.extend({
 	defaults: {
 		name: 'IT'
 	}

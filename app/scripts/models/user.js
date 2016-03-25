@@ -1,6 +1,6 @@
 var Backbone = require('backbone');
 
-User = Backbone.Model.extend({
+var User = Backbone.Model.extend({
 	defaults: {
 		name: '',
 		lastName: '',

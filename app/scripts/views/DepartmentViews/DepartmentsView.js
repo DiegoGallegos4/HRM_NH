@@ -7,7 +7,7 @@ var bs = require('bootstrap-sass');
 var DepartmentView = require('./DepartmentView');
 var DepartmentModalView = require('./DepartmentModalView');
 
-DepartmentsView = Backbone.View.extend({
+var DepartmentsView = Backbone.View.extend({
 
 	template: Handlebars.compile( $('#table-improv-template').html() ),
 

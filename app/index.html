@@ -32,13 +32,11 @@
     <meta name="theme-color" content="#ffffff">
   </head>
   <body>
-    <nav id="drawer" class="dark-blue">
-    </nav>
+    
     
     <section id='main' class='container'>
-      <section id="nav">
-        
-      </section>
+      <!-- Navbar  -->
+      <section id="nav"></section>
       <!-- BEGIN:  Modal -->
       <section >
         <div class='modal fade' id='form-modal' tabindex='-1' role='dialog'></div>
@@ -48,7 +46,6 @@
       <section id='containerList'></section>
        <!--END: containerList -->
     </section>
-
     <!-- TEMPLATES -->
     <!-- BEGIN: Navbar-->
     <script type='text/x-handlebars-template' id='navbar-template'>
@@ -72,6 +69,9 @@
             <li><a href="#dashboard">General</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+            <li><a>
+              <i id='menu' class="fa fa-bars"></i>
+            </a></li>
             <li><a href="#logout">Salir</a></li>
             </ul>
           </div><!-- /.navbar-collapse -->
@@ -79,6 +79,23 @@
       </nav>
     </script>
     <!-- END: Navbar -->
+    <!-- BEGIN: Sidebar -->
+    <script type='text/x-handlebars-template' id='sidebar-template'>
+      <nav id="drawer" class="dark-blue">
+        <!-- <img src="{{profile.avatar}}" alt="Avatar"> -->
+        <header class='sidebar-header center'>
+          <h2>NH</h2>
+        </header><!-- /header -->
+        <nav  >
+          <ul class="sidebar-nav center">
+            <li><a href="#dashboard">Mis Solicitudes</a></li>
+            <li>Usuarios</li>
+            <li>Salir</li>
+         </ul>
+        </nav>
+      </nav>
+    </script>
+    <!-- END: Sidebar -->
     <!-- BEGIN: Table List Template -->
     <script type='text/x-handlebars-template' id='row-department-template'>
       <td>
@@ -482,7 +499,7 @@
         </td>
         <td>{{employeeID}}</td>
         <td>{{printDate date}}</td>
-        <td>{{feedingType}}</td>
+        <td>{{requestLine.request.feedingType}}</td>
         <td>
           <div class='view'>
             <label>{{price}}</label>
@@ -644,13 +661,13 @@
             {{printDate model.date}}
           </td>
           <td>
-            {{model.feedingType}}
+            {{model.requestLine.request.feedingType}}
           </td>
            <td>
             {{model.pin}}
           </td>
           <td>
-            <input type='checkbox' name="approved" {{#if model.approved}} checked {{/if}} disabled>
+            <input type='checkbox' name="approved" {{#if model.requestLine.approved}} checked {{/if}} disabled>
           </td>
     </script>
     <!-- END:MyRequests Row Template -->

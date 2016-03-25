@@ -3,7 +3,7 @@ var Backbone = require('backbone');
 var Handlebars = require('handlebars');
 Backbone.$ = $;
 
-DepartmentView = Backbone.View.extend({
+var DepartmentView = Backbone.View.extend({
 	tagName: 'tr',
 
 	className: 'text-center',

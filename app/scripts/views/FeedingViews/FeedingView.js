@@ -8,7 +8,8 @@ var User = require('../../models/user');
 // Import Views
 var FeedingModalView = require('./FeedingModalView');
 
-FeedingView = Backbone.View.extend({
+
+var FeedingView = Backbone.View.extend({
 	tagName: 'tr',
 
 	className: 'data-row text-center',
@@ -50,14 +51,15 @@ FeedingView = Backbone.View.extend({
 	},
 
 	addPin: function(e){
-		var requestID = this.$('td')[0].id
+		var requestID = this.$('td')[0].id;
+
 		var view = new FeedingPinModalView({model: this.model, employeeID: employeeID});
 		$('#form-modal').html(view.render().el);
 	}
 });
 
-// Pin Modal View
-FeedingPinModalView = Backbone.View.extend({
+// Pin Modal View 
+var FeedingPinModalView = Backbone.View.extend({
 	tagName: 'div',
 
 	className: 'modal-dialog',
@@ -87,7 +89,7 @@ FeedingPinModalView = Backbone.View.extend({
 		var self = this;
 		if(!this.requestID){
 			var user = new User();
-			Promise.resolve(user.fetch({id: employeeID})).then(function(user){
+			Promise.resolve(user.fetch({id:self.employeeID})).then(function(user){
 				console.log(user.get('pin'));
 				if (self.$pin.val() == user.get('pin')){
 					self.model.save({confirm: true});

@@ -37,8 +37,8 @@ var RequestsView = Backbone.View.extend({
 		this.collection.fetch({reset: true});
 		this.helper;
 
-		employees = new Employees();
-		employees.fetch();
+		this.employees = new Employees();
+		this.employees.fetch();
 	},
 
 	render: function(){
@@ -76,7 +76,7 @@ var RequestsView = Backbone.View.extend({
 	},
 
 	addOne: function(model){
-		var view = new this.subView({collection: this.collection, model: model});
+		var view = new this.subView({collection: this.collection, model: model, employees: this.employees});
 		this.$table.append( view.render().el );
 	},
 
@@ -86,7 +86,7 @@ var RequestsView = Backbone.View.extend({
 	},
 
 	showModal: function(e){
-		var view = new this.modalView( { collection: this.collection, model: null});
+		var view = new this.modalView( { collection: this.collection, model: null, employees:this.employees});
 		$('#form-modal').html(view.render().el);
 		$('[data-toggle="tooltip"]').tooltip();
 	}

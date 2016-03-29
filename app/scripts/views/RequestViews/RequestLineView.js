@@ -13,21 +13,25 @@ var RequestLineView = Backbone.View.extend({
 	events: {
 		'click .deleteLine': 'delete',
 		'click input[name="approved"]': 'approveFeeding',
+		'change input[name="employeeID"]': 'setEmployeeId'
 	},
 
-	initialize: function(){
+	initialize: function(attrs){
+		this.employees = attrs.employees;
 		this.feedings = new Feedings();
-		console.log(this.model);
 	},
 
 	render: function(){
 		this.attrs = this.model ? this.model.attributes: null;
-		this.$el.html( this.template({employees: employees.toJSON(), model: this.attrs }));
+		if(this.attrs){
+			var employee = this.employees.get({id: this.attrs.employeeID}).attributes.completeName;
+		}
+		this.$el.html( this.template({employees: this.employees.toJSON(), model: this.attrs, emp: employee }));
 		return this;
 	},
 
 	delete: function(e){
-		if (this.model){
+		if(this.model){
 			this.model.destroy();
 		}else{
 			this.$el.remove();

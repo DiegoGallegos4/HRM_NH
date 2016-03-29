@@ -19,17 +19,20 @@ var FeedingView = Backbone.View.extend({
 		'keypress .edit': 'updateOnEnter',
 		'dblclick td': 'edit',
 		'click .deleteLine': 'delete',
-		'click .update': 'addPin'
+		'click .update': 'insertPin'
 	},
 
 	template: Handlebars.compile( $('#row-feeding-template').html() ),
 
-	initialize: function(){
+	initialize: function(attrs){
+		this.employees = attrs.employees;
 		this.listenTo(this.model, 'change', this.render);
 		this.listenTo(this.model, 'destroy', this.remove);
 	},
 
 	render: function(){
+		var employee = this.employees.get({id: this.model.attributes.employeeID}).attributes.completeName;
+		this.model.attributes.employee = employee;
 		this.$el.html( this.template(this.model.attributes) );
 		$('[data-toggle="tooltip"]').tooltip();
 		this.$input = this.$('.edit');
@@ -50,10 +53,8 @@ var FeedingView = Backbone.View.extend({
 		this.$el.removeClass('editing');
 	},
 
-	addPin: function(e){
-		var requestID = this.$('td')[0].id;
-
-		var view = new FeedingPinModalView({model: this.model, employeeID: employeeID});
+	insertPin: function(e){
+		var view = new FeedingPinModalView({model: this.model, employees: this.employees});
 		$('#form-modal').html(view.render().el);
 	}
 });
@@ -70,8 +71,12 @@ var FeedingPinModalView = Backbone.View.extend({
 		'click #check': 'checkPin'
 	},
 
+	initialize: function(attrs){
+		this.employees = attrs.employees;
+		this.employeePIN = this.employees.get({id: this.model.attributes.employeeID}).attributes.pin;	
+	},
+
 	render: function(){
-		console.log(this.model.get('pin'));
 		this.$el.html( this.template() );
 		this.$form = this.$('#form-feedingPin');
 		this.$pin = this.$('#pin');
@@ -79,32 +84,20 @@ var FeedingPinModalView = Backbone.View.extend({
 
 		return this;
 	},
-
-	verify: function(){
-
-	},
-
+	
 	checkPin: function(e){
 		e.preventDefault();
-		var self = this;
-		if(!this.requestID){
-			var user = new User();
-			Promise.resolve(user.fetch({id:self.employeeID})).then(function(user){
-				console.log(user.get('pin'));
-				if (self.$pin.val() == user.get('pin')){
-					self.model.save({confirm: true});
-					this.close();
-				}else{
-					console.log('wrong pin');
-				}
-			})
+		
+		if( !this.requestID && (this.$pin.val() == this.employeePIN) ){
+			this.model.save({confirm: true});
+			this.close();
+		}else if (this.$pin.val() == this.model.get('pin')){
+			this.model.save({confirm: true});
+			this.close();
 		}else{
-			if (this.$pin.val() == this.model.get('pin')){
-				this.model.save({confirm: true});
-				this.close();
-			}else{
-				console.log('wrong pin');
-			}
+			this.$('#lineError')
+				.html('PIN incorrecto')
+				.show().hide(10000);
 		}
 	},
 

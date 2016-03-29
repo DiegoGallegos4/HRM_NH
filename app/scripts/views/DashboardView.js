@@ -16,13 +16,11 @@ var DashboardView = Backbone.View.extend({
 			{'name':'Confirmado'}
 	], 
 
-	initialize: function(){
-		this.collection = new Feedings();
+	initialize: function(attrs){
 		this.subView = MyRequestsView;
-		
+		this.employees = attrs.employees
 		this.listenTo( this.collection, 'add', this.addOne );
 		this.listenTo( this.collection, 'reset', this.addAll );
-
 		this.byCreator();
 		this.helpers;
 	},
@@ -31,8 +29,7 @@ var DashboardView = Backbone.View.extend({
 		this.$el.html( this.template( {title:'Mis Solicitudes', 
 			header_fields: this.header, 
 			filterText: true, 
-			filterDate: true, 
-			addButton:true} ));
+			filterDate: true} ));
 		this.$tbody = this.$('#rows');
 		this.$('#filterDate').datetimepicker({
 			format: 'YYYY/MM/DD'
@@ -52,7 +49,7 @@ var DashboardView = Backbone.View.extend({
 	},
 
 	addOne: function(model){
-		var view = new this.subView({model: model});
+		var view = new this.subView({model: model, employees: this.employees});
 		this.$tbody.append( view.render().el );
 		$('[data-toggle="tooltip"]').tooltip();
 	},
@@ -109,7 +106,12 @@ var MyRequestsView = Backbone.View.extend({
 		'click .deleteLine': 'delete'
 	},
 
-	render: function(){
+	initialize: function(attrs){
+		this.employees = attrs.employees;
+		this.model.attributes.employee = this.employees.get({id: this.model.attributes.employeeID}).attributes.completeName;
+	},
+
+	render: function(attrs){
 		this.$el.html( this.template({ model: this.model.attributes }));
 		return this;
 	},

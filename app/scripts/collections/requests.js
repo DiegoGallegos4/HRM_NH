@@ -21,5 +21,5 @@ var Requests = Backbone.Collection.extend({
 		return ms
 	}
 });
-
+window.Requests = Requests;
 module.exports = Requests;

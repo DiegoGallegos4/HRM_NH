@@ -8,6 +8,7 @@ var Employees = require('../collections/employees');
 var Departments = require('../collections/departments');
 var Requests = require('../collections/requests');
 var Feedings = require('../collections/feedings');
+var RequestLines = require('../collections/requestLines');
 // Import Views
 var HomeView = require('../views/HomeView');
 var DepartmentsView = require('../views/DepartmentViews/DepartmentsView');
@@ -20,10 +21,16 @@ var LoginView = require('../views/LoginView');
 var Navbar = require('../views/NavbarView');
 var NotFoundView = require('../views/NotFoundView');
 var DashboardView = require('../views/DashboardView');
+var PaymentsView = require('../views/PaymentViews/PaymentsView')
+// Components
 import HelloMessage from '../components/test';
+import PaymentContainer from '../components/payments';
 // Dependencies
 var React = require('react');
 var ReactDOM = require('react-dom');
+
+window.PV = PaymentsView;
+window.Fd = Feedings;
 
 var AppRouter = Backbone.Router.extend({
 	routes: {
@@ -39,6 +46,7 @@ var AppRouter = Backbone.Router.extend({
 		'logout'		 : 'logout',
 		'dashboard'		 : 'dashboard',
 		'test'			 : 'test',
+		'payments'		 : 'payments',
 		'*notFound'		 : 'notFound'
 	},
 
@@ -54,8 +62,12 @@ var AppRouter = Backbone.Router.extend({
 
 	dashboard: function(){
 		this.showNav();
-		var view = new DashboardView();
-		this.checkLogin(view);
+		var self = this;
+		var employees = new Employees();
+		Promise.resolve(employees.fetch()).then(function(response){
+			var view = new DashboardView({ collection: new Feedings(), employees: employees});
+			self.checkLogin(view);
+		})
 	},
 
 	departments: function(){
@@ -78,8 +90,12 @@ var AppRouter = Backbone.Router.extend({
 
 	feedings: function(){
 		this.showNav();
-		var view = new FeedingsView({collection: new Feedings()});
-		this.checkLogin(view);
+		var self = this;
+		var employees = new Employees();
+		Promise.resolve(employees.fetch()).then(function(response){
+			var view = new FeedingsView({collection: new Feedings(),employees: employees});
+			self.checkLogin(view);
+		});
 	},
 
 	transportation: function(){
@@ -92,6 +108,17 @@ var AppRouter = Backbone.Router.extend({
 		this.showNav();
 		var view = new UserView({collection: new Users()});
 		this.checkLogin(view);
+	},
+
+	payments: function(){
+		this.showNav();
+		var feedings = new Feedings();
+		var departments = new Departments();
+		var self = this;
+		Promise.all([feedings.fetch(), departments.fetch()]).then(function(response){
+			var view = new PaymentsView({collection: feedings, departments: departments});
+			self.checkLogin(view,'react');
+		})
 	},
 
 	login: function(){
@@ -112,12 +139,12 @@ var AppRouter = Backbone.Router.extend({
 	},
 
 	// Helpers
-	showView: function(view){
-		$('#containerList').html('');
+	showView: function(view,flag){
+		if(flag !== 'react') $('#containerList').html('');
 		if (this.currentView) this.currentView.clean();
 	    this.currentView = view;
 	    this.currentView.render()
-	    $('#containerList').html(this.currentView.el);
+	    if(flag !== 'react') $('#containerList').html(this.currentView.el);
 	},
 
 	showNav: function(){
@@ -127,15 +154,15 @@ var AppRouter = Backbone.Router.extend({
 	    $('#nav').html(this.nav.el);
 	},
 
-	checkLogin: function(view){
+	checkLogin: function(view,flag){
 		if(window.localStorage.token !== ''){
 			if(view.name !== 'LoginView'){
-				this.showView(view);
+				this.showView(view,flag);
 			}else{
 				Backbone.history.navigate('',true)
 			}
 		}else{
-			this.showView(new LoginView);
+			this.showView(new LoginView());
 			Backbone.history.navigate('#login',true)
 		}
 	}

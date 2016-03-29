@@ -28,6 +28,14 @@ var Feedings = Backbone.Collection.extend({
 			}
 		});
 		return ms;
+	},
+
+	comparator: function(a,b){
+		var a = a.get('employee').department.abbr;
+		var b = b.get('employee').department.abbr;
+		return   a > b ? 1
+			   : a < b ? -1
+			   : 0;
 	}
 });
 

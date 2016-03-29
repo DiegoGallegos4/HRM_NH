@@ -357,7 +357,7 @@
                   <input id="employeeID"  class='form-control' list='employees' name="employeeID" required></input>
                   <datalist id='employees'>
                   {{#each employees}}
-                    <option value="{{completeName}}"></option>
+                    <option data-value={{id}} value="{{completeName}}"></option>
                   {{/each}}
                   </datalist>
                   <div class="help-block with-errors"></div>
@@ -452,16 +452,13 @@
     <!-- BEGIN:RequestLine Row Template -->
     <script type='text/x-handlebars-template' id='requestLine-row-template'>
         <td>
-          <input list='emps' name='employeeID' value="{{model.employeeID}}" id='{{model.id}}' required></input>
+          <input list='emps' name='employeeID' value="{{emp}}" id='{{model.id}}'  required></input>
           <datalist id='emps'>
             {{#each employees}}
-            <option value="{{completeName}}"></option>
+            <option data-value="{{id}}" value="{{completeName}}"></option>
             {{/each}}
           </datalist>
         </td>
-         <!-- <td>
-            <input type='checkbox' name="feeding" {{#if model.feeding}} checked {{/if}}>
-          </td> -->
           <td>
             <input type='checkbox' name="approved" {{#if model.approved}} checked {{/if}}>
           </td>
@@ -497,9 +494,9 @@
           </span>
           {{/if}}
         </td>
-        <td>{{employeeID}}</td>
+        <td>{{employee}}</td>
         <td>{{printDate date}}</td>
-        <td>{{requestLine.request.feedingType}}</td>
+        <td>{{requestLine.request.feedingType}}{{feedingType}}</td>
         <td>
           <div class='view'>
             <label>{{price}}</label>
@@ -655,7 +652,7 @@
     <!-- BEGIN:MyRequests Row Template -->
     <script type='text/x-handlebars-template' id='myRequests-row-template'>
           <td>
-            {{model.employeeID}}
+            {{model.employee}}
           </td>
           <td>
             {{printDate model.date}}

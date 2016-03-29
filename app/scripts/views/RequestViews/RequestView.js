@@ -25,7 +25,8 @@ var RequestView = Backbone.View.extend({
 
 	template: Handlebars.compile( $('#row-template-request').html() ),
 
-	initialize: function(){
+	initialize: function(attrs){
+		this.employees = attrs.employees;
 		this.listenTo(this.model, 'change', this.render);
 		this.listenTo(this.model, 'destroy', this.remove);
 	},
@@ -43,24 +44,14 @@ var RequestView = Backbone.View.extend({
 		Promise.resolve(request.fetch()).then(function(response){
 			return response;
 		}).then(function(json){
-			var view = new RequestModalView( {collection: self.collection, model: json} );
+			var view = new RequestModalView( {collection: self.collection, model: json, employees: self.employees } );
 			$('#form-modal').html(view.render().el);
 			$('[data-toggle="tooltip"]').tooltip();
 		})
 	},
 
 	delete: function(){
-		var id = this.model.get('id');
-		var self = this;
-		Promise.resolve(RequestLines.fetch()).then(function(response){
-			var models = RequestLines.lines(id);
-			models.forEach(function(elt,i,array){
-				elt.destroy();
-			})
-			return models;
-		}).then(function(models){
-			self.model.destroy();
-		});
+		this.model.destroy();
 	}
 });
 

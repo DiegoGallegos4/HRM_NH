@@ -35,15 +35,15 @@ var RequestModalView = Backbone.View.extend({
 		{name: '<i class="fa fa-thumbs-o-up"></i>',tooltip: 'Confirmar Transporte'}
 	],
 
-	initialize: function(){
+	initialize: function(attrs){
 		this.collectionLine = RequestLines;
-		this.employees = new Employees();
+		this.employees = attrs.employees;
 		this.subViews = []
 		this.lunchTime = "11:00 AM";
 		this.supperTime = "4:00 PM";
 		this.transportationTime = "7:00 PM";
-
 		this.collectionLine.fetch();
+
 	},
 
 	render: function(){
@@ -68,6 +68,7 @@ var RequestModalView = Backbone.View.extend({
 		var self = this;
 		self.$('#rows').html('');
 
+
 		if(self.ID){
 			Promise.resolve(self.collectionLine.fetch()).then(function(response){
 				while(!self.collectionLine.lines(self.ID)){ console.log('waiting') }
@@ -75,7 +76,7 @@ var RequestModalView = Backbone.View.extend({
 				return models;
 			}).then(function(rows){
 				rows.forEach(function(elt,i,array){
-					var viewR = new RequestLineView({model: elt });
+					var viewR = new RequestLineView({model: elt, employees: self.employees});
 					self.subViews.push(viewR);
 					self.$('#rows').append( viewR.render().el );	
 				});
@@ -85,35 +86,35 @@ var RequestModalView = Backbone.View.extend({
 
 	addNewRow: function(row){
 		var now = new Date(Date.now());
-		var requestDate = new Date(this.$('#'))
+		var requestDateString = this.$('#date').val();
+		var requestDate = new Date(requestDateString);
+		var nowDate = now.getFullYear() + '/' +  (now.getMonth() > 10 ? now.getMonth() + 1 : '0'+(now.getMonth() + 1))
+			  + '/' + (now.getDate() > 10 ? now.getDate(): '0' + now.getDate());
 		var nowTime = now.getHours() % 12 + ':' + (now.getMinutes() < 10 ? ('0' + now.getMinutes()) : now.getMinutes())
 			  + ' ' + (now.getHours() > 12 ? 'PM' : 'AM');
 
 		var conditionalSupper = ($('#typeFeeding').val() == 'Cena') && (Date.parse('01/01/2016 ' + this.supperTime) > Date.parse('01/01/2016 ' + nowTime));
 		var conditionalLunch = ($('#typeFeeding').val() == 'Almuerzo') && (Date.parse('01/01/2016 ' + this.lunchTime) > Date.parse('01/01/2016 ' + nowTime));
-		if( conditionalSupper || conditionalLunch ){
-			var view = new RequestLineView({collection: this.employees});
+		if(requestDateString === nowDate){
+			if(conditionalSupper || conditionalLunch){
+				var view = new RequestLineView({employees: this.employees});
+				this.$('#rows').append( view.render().el );
+				this.verifyTransport();
+			}else{
+				this.$('#lineError')
+					.html('No puedes ingresar solicitudes de Almuerzo despues de las 11:00 am ni solicitudes de Cena despues de la 4:00pm. Contactarse con RH')
+					.show().hide(10000);
+			}
+		} else if (requestDate.getTime() > now.getTime()){
+			var view = new RequestLineView({employees: this.employees});
 			this.$('#rows').append( view.render().el );
 			this.verifyTransport();
-		} else{
+		}else{
 			this.$('#lineError')
-				.html('No puedes ingresar solicitudes de Almuerzo despues de las 11:00 am ni solicitudes de Cena despues de la 4:00pm. Contactarse con RH')
-				.show().hide(10000);
+					.html('Revisa la fecha de solicitud. Pareciera que es antes que hoy.')
+					.show().hide(10000);
 		}				
 	},
-
-	// approveFeeding: function(e){
-	// 	if(window.localStorage.profile == 'admin' || window.localStorage.profile == 'sysadmin'){
-	// 		var val = $(e.currentTarget).prop('checked');
-
-	// 		$(e.currentTarget).prop('checked', val);
-	// 	}else{
-	// 		e.preventDefault();
-	// 		this.$('#lineError')
-	// 				.html('Solo Administracion puede aprobar Alimentacion')
-	// 				.show().hide(8000);
-	// 	}
-	// },
 
 	verifyTransport: function(e){
 		var time = $('#hour').val()
@@ -151,6 +152,13 @@ var RequestModalView = Backbone.View.extend({
 		
 	},
 
+	getEmployeeId: function(key){
+		var data = {};
+		$('#emps option').each(function(i,el){
+			data[$(el).val()] = $(el).data('value');
+		});
+		return data[key];
+	},
 	
 	addRequest: function(e){
 		e.preventDefault();
@@ -173,6 +181,7 @@ var RequestModalView = Backbone.View.extend({
 		});
 		formData['requestLines'] = [];
 
+		var self = this;
 		$('tr td').children('input').each(function(i,elt){
 			if( counter%4 == 0) {
 				index = index + 1;
@@ -198,6 +207,7 @@ var RequestModalView = Backbone.View.extend({
 				formLineData[index][$(elt).attr('name')] = $(elt).val();
 
 				if($(elt).attr('name') == 'employeeID'){
+					formLineData[index][$(elt).attr('name')] = self.getEmployeeId($(elt).val())
 					feeding[index][$(elt).attr('name')] = $(elt).val();
 				}
 			}

@@ -30,10 +30,10 @@ var FeedingsView = Backbone.View.extend({
 			{'name':'<i class="fa fa-check-circle-o"></i>'}
 	],
 
-	initialize: function(){
+	initialize: function(attrs){
 		this.subView = FeedingView;
 		this.modalView = FeedingModalView;
-		this.employees = new Employees();
+		this.employees = attrs.employees;
 		
 		
 		this.listenTo( this.collection, 'add', this.addOne);
@@ -58,7 +58,7 @@ var FeedingsView = Backbone.View.extend({
 	},
 
 	addOne: function(model){
-		var view = new this.subView({model: model});
+		var view = new this.subView({model: model, employees: this.employees});
 		this.$tbody.append( view.render().el );
 		$('[data-toggle="tooltip"]').tooltip();
 	},
@@ -69,7 +69,7 @@ var FeedingsView = Backbone.View.extend({
 	},
 
 	showModal: function(e){
-		var view = new this.modalView({collection: this.collection});
+		var view = new this.modalView({collection: this.collection, employees: this.employees});
 		$('#form-modal').html(view.render().el);
 	},
 

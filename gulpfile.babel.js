@@ -51,11 +51,12 @@ gulp.task('browserify', () => {
     debug: true,
     extensions: ['.js','.jsx'],
     cache: {},
-    package: {}
+    packageCache: {}
   };
 
   var opts = assign({},watchify.args,customOpts);
-  return watchify(browserify('./app/scripts/main.js',watchify.args))
+  
+  return watchify(browserify('./app/scripts/main.js',watchify.args), {poll: true})
     .transform(babelify, {ignore: ['./bower_components/**/*'], presets: ['es2015','react']})
     .transform(debowerify)
     .bundle()
@@ -126,7 +127,7 @@ gulp.task('extras', () => {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('serve', ['styles', 'fonts'], () => {
+gulp.task('serve', ['styles', 'fonts','browserify'], () => {
   browserSync({
     notify: false,
     port: 9000,

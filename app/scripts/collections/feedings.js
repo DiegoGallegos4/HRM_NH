@@ -13,7 +13,7 @@ var Feedings = Backbone.Collection.extend({
 
 		var pattern = new RegExp(phrase,"gi");
 		return _(this.filter(function(data){
-			return pattern.test(data.get('employeeID'));
+			return pattern.test(data.get('employee'));
 		}));
 	},
 
@@ -31,8 +31,8 @@ var Feedings = Backbone.Collection.extend({
 	},
 
 	comparator: function(a,b){
-		var a = a.get('employee').department.abbr;
-		var b = b.get('employee').department.abbr;
+		var a = a.get('employee').departmentId;
+		var b = b.get('employee').departmentId;
 		return   a > b ? 1
 			   : a < b ? -1
 			   : 0;

@@ -8,10 +8,19 @@
 
     <title>HRM</title>
     <link rel="stylesheet" href="styles/main.css">
-    <script src="/bower_components/modernizr/modernizr.js"></script>
+    <!-- build:css vendor/css/combined.css -->
     <link rel="stylesheet" type="text/css" href="/bower_components/font-awesome/css/font-awesome.css">
-    <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <link rel="stylesheet" type="text/css" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css" />
+    <link rel="stylesheet" type="text/css" href="/bower_components/toastr/toastr.min.css">
+    <!-- endbuild -->
+   <!--  <script src="https://apis.google.com/js/platform.j
+    s" async></script> -->
+
+    <!-- build:js vendor/js/combined.js -->
+    <script src="/bower_components/modernizr/modernizr.js"></script>
+    <script src="/bower_components/jspdf/dist/jspdf.min.js"></script>
+    <script src="/bower_components/jspdf-autotable/dist/jspdf.plugin.autotable.js" defer></script>
+    <!-- endbuild -->
     <!-- favicons -->
     <link rel="apple-touch-icon" sizes="57x57" href="favicons/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="favicons/apple-icon-60x60.png">
@@ -32,8 +41,7 @@
     <meta name="theme-color" content="#ffffff">
   </head>
   <body>
-    
-    
+    </section>
     <section id='main' class='container'>
       <!-- Navbar  -->
       <section id="nav"></section>

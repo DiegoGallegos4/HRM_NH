@@ -5,7 +5,11 @@
     "bootstrap-sass": "~3.3.5",
     "modernizr": "~2.8.1",
     "bootstrap-validator": "^0.9.0",
-    "eonasdan-bootstrap-datetimepicker": "^4.17.37"
+    "eonasdan-bootstrap-datetimepicker": "^4.17.37",
+    "jspdf-plugins": "jsPDF-plugins#*",
+    "jspdf": "^1.2.61",
+    "jspdf-autotable": "^2.0.24",
+    "toastr": "^2.1.2"
   },
   "overrides": {
     "bootstrap-sass": {

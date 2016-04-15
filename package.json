@@ -71,6 +71,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-2": "^6.5.0",
     "google-client-api": "^1.0.4",
+    "jspdf": "^1.2.61",
     "react": "^15.0.0-rc.1",
     "react-dom": "^15.0.0-rc.1",
     "reactify": "^1.1.1",

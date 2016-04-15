@@ -1,0 +1,53 @@
+@import "app/styles/theme.scss";
+// Table styles
+table{
+  thead{
+    font-weight: bold;
+    font-size: 1.2em;
+    background-color: $primary-color;
+    color: $primary-color-text;
+  }   
+    
+  .edit{
+    display: none;
+  }
+
+  tbody{
+    label{
+      font-weight: normal !important;
+
+    }
+  }
+
+  tr:hover .destroy{
+     display: inline-block;
+  }
+
+  .destroy{
+      display: inline-block;
+      float: right;
+      outline: none;
+      width: 12px;
+      height: 12px;
+      margin: auto 0;
+      color: #cc9a9a;
+      border: none;
+      background: inherit;
+    }
+    
+  .destroy:after{
+    content: 'x';
+    right: 10px;
+    outline: none;
+  }
+}
+// Separator
+.subheader{
+  background-color: $primary-color-light;
+}
+
+.divider{
+  background-color: aliceblue;
+  font-size: smaller;
+  font-weight: bold;
+}

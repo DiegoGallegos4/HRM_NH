@@ -4,6 +4,10 @@ $icon-font-path: '../fonts/';
 @import "bower_components/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
 // endbower
 
+
+@import "app/styles/theme.scss";
+@import "app/styles/table.scss";
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   .container {
@@ -25,7 +29,16 @@ body,html,#containerList{
   margin: 0;
 }
 
+// Helper styles
+.center{
+  text-align: center;
+}
 
+.right{
+  float:right;
+}
+
+// Container Styles
 #containerList{
   background-color: white;
   width: 100%;
@@ -38,52 +51,12 @@ body,html,#containerList{
 }
 
 
-table{
-  thead{
-    font-weight: bold;
-    font-size: 1.2em;
-    background-color: #C2FCED;
-  }   
-    
-  .edit{
-    display: none;
-  }
-
-  tbody{
-    label{
-      font-weight: normal !important;
-
-    }
-  }
-
-  tr:hover .destroy{
-     display: inline-block;
-  }
-
-  .destroy{
-      display: inline-block;
-      float: right;
-      outline: none;
-      width: 12px;
-      height: 12px;
-      margin: auto 0;
-      color: #cc9a9a;
-      border: none;
-      background: inherit;
-    }
-    
-  .destroy:after{
-    content: 'x';
-    right: 10px;
-    outline: none;
-  }
-}
-
+// Cards on dashboard
 .thumbnail{
     height: 180px;
     padding-top: 50px;  
     border: 8px solid;
-    background-color: #FF5722;
+    background-color: $primary-color-dark;
     color: white;
     font-size: 1.5em;
     border-radius: 15px;
@@ -109,13 +82,6 @@ a.thumbnail:hover, a.thumbnail:focus, a.thumbnail.active {
     
 }
 
-.center{
-  text-align: center;
-}
-
-.right{
-  float:right;
-}
 // Inline editing
 tr.editing {
     .edit{
@@ -168,7 +134,11 @@ tr.editing {
 
 .filter{
   width: 250px;
-  margin:15px 0px;
+  margin:15px 5px;
+}
+
+.input-filter{
+  margin:15px 5px;
 }
 
 .btn-container{
@@ -185,6 +155,8 @@ tr.editing {
   }
 }
 
+
+// Login styles
 figure{
   text-align: center;
   padding-top: 10px;
@@ -196,6 +168,7 @@ figure{
   }
 }
 
+// Sidebar styles
 #drawer{
   position: absolute;
   width: 300px;
@@ -211,7 +184,6 @@ figure{
  transform: translate(0, 0);
 }
 
-// Sidebar
 .sidebar-header{
   font-size: 40px;
 }
@@ -233,8 +205,3 @@ figure{
   }
 }
 
-// Separator
-
-.separator{
-  background-color: whitesmoke;
-}

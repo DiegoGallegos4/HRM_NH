@@ -10,7 +10,7 @@ var NavbarView = Backbone.View.extend({
 	},
 
 	initialize: function(){
-		this.sidebar = new Sidebar;
+		this.sidebar = new Sidebar();
 		$('body').bind('click',this.closeSidebar);
 
 	},

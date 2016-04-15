@@ -6,6 +6,7 @@ Backbone.$ = $;
 window.jQuery = $;
 window.$ = $;
 window._ = _;
+window.toastr = require('toastr');
 
 
 // CSS

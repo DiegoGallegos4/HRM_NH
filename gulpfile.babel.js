@@ -17,6 +17,8 @@ import babelify from 'babelify';
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
 
+const path = 'dist';
+
 gulp.task('styles', () => {
   return gulp.src('app/styles/*.scss')
     .pipe($.plumber())
@@ -28,7 +30,7 @@ gulp.task('styles', () => {
     }).on('error', $.sass.logError))
     .pipe($.autoprefixer({browsers: ['> 1%', 'last 2 versions', 'Firefox ESR']}))
     .pipe($.sourcemaps.write())
-    .pipe(gulp.dest('.tmp/styles'))
+    .pipe(gulp.dest(path + '/styles'))
     .pipe(browserSync.stream())
     .pipe(reload({stream: true}));
 });
@@ -39,11 +41,19 @@ gulp.task('scripts', () => {
     .pipe($.sourcemaps.init())
     .pipe($.babel())
     .pipe($.sourcemaps.write('.'))
-    .pipe(gulp.dest('.tmp/scripts'))
+    .pipe(gulp.dest(path+'/scripts'))
     .pipe(reload({stream: true}));
 });
 
+gulp.task('copy-scripts',() => {
+  return gulp.src('app/scripts/**/*.js')
+    .pipe(gulp.dest(path+'/scripts'))
+})
 
+gulp.task('favicons',() => {
+  return gulp.src('app/favicons/**')
+    .pipe(gulp.dest('./dist'+'/favicons'))
+})
 
 gulp.task('browserify', () => {
   var customOpts = {
@@ -65,8 +75,7 @@ gulp.task('browserify', () => {
       this.emit('end');
     })
     .pipe(source('bundle.js'))
-    .pipe(gulp.dest('dist/js'))
-    .pipe(gulp.dest('.tmp/scripts'))
+    .pipe(gulp.dest(path + '/scripts'))
     .pipe(reload({stream: true}))
 });
 
@@ -88,9 +97,9 @@ const testLintOptions = {
 gulp.task('lint', lint('app/scripts/**/*.js'));
 gulp.task('lint:test', lint('test/spec/**/*.js', testLintOptions));
 
-gulp.task('html', ['styles', 'scripts'], () => {
+gulp.task('html', ['styles','browserify'], () => {
   return gulp.src('app/*.html')
-    .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
+    .pipe($.useref({searchPath: ['dist', 'app', '.']}))
     .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.cssnano()))
     .pipe($.if('*.html', $.htmlmin({collapseWhitespace: true})))
@@ -112,8 +121,12 @@ gulp.task('images', () => {
 gulp.task('fonts', () => {
   return gulp.src(require('main-bower-files')('**/*.{eot,svg,ttf,woff,woff2}', function (err) {})
     .concat('app/fonts/**/*'))
-    .pipe(gulp.dest('.tmp/fonts'))
     .pipe(gulp.dest('dist/fonts'));
+});
+
+gulp.task('fonts-fa', () => {
+  return gulp.src('./bower_components/font-awesome/fonts/**/*.{eot,svg,ttf,woff,woff2}')
+    .pipe(gulp.dest('dist/vendor/fonts'));
 });
 
 gulp.task('extras', () => {
@@ -142,7 +155,7 @@ gulp.task('serve', ['styles', 'fonts','browserify'], () => {
   gulp.watch([
     'app/*.html',
     'app/images/**/*',
-    '.tmp/fonts/**/*'
+    'dist/fonts/**/*'
   ]).on('change', reload);
 
   gulp.watch('app/styles/**/*.scss', ['styles']);
@@ -156,8 +169,7 @@ gulp.task('serve:dist', () => {
     notify: false,
     port: 9000,
     server: {
-      baseDir: ['dist'],
-      https: true
+      baseDir: ['dist']
     }
   });
 });
@@ -197,7 +209,7 @@ gulp.task('wiredep', () => {
     .pipe(gulp.dest('app'));
 });
 
-gulp.task('build', ['html', 'images', 'fonts', 'extras'], () => {
+gulp.task('build', ['html', 'images', 'fonts', 'extras','favicons'], () => {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
